@@ -40,6 +40,6 @@
     render();
   }
 
-  init();
-  animate();
+  // init();
+  // animate();
 // })();
