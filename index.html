@@ -27,33 +27,37 @@
 				z-index:100;
 			}
 
+      audio {
+        width: 1000px;
+      }
+
 		</style>
   </head>
   <body>
     <script src="three.r85.js"></script>
-    <!-- <video id="base-video" autoplay loop webkit-playsinline style="display:none">
+    <video oncanplay="videoCanPlay()" id="base-video" webkit-playsinline style="display:none">
       <source src="videos/spirit-trimmed-2.mp4" type='video/mp4;'>
-    </video> -->
+    </video>
     <!-- <video id="second-video" autoplay loop webkit-playsinline style="display:none">
       <source src="videos/spirit-trimmed.mp4" type='video/mp4;'>
     </video> -->
-    <audio id="dan" oncanplay="addPlayCounter()">
+    <audio class="audioClip" controls id="dan" oncanplay="addPlayCounter()">
       <source src="audio/compressed/dan.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="dave" oncanplay="addPlayCounter()">>
+    <audio class="audioClip" controls id="dave" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/dave.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="brodie" oncanplay="addPlayCounter()">>
+    <audio class="audioClip" controls id="brodie" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="nick" oncanplay="addPlayCounter()">>
+    <audio class="audioClip" controls id="nick" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/nick.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="chuck" oncanplay="addPlayCounter()">>
+    <audio class="audioClip" controls id="chuck" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
     </audio>
     <div id="container"></div>
