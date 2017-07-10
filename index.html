@@ -37,23 +37,23 @@
     <!-- <video id="second-video" autoplay loop webkit-playsinline style="display:none">
       <source src="videos/spirit-trimmed.mp4" type='video/mp4;'>
     </video> -->
-    <audio id="dan">
+    <audio id="dan" oncanplay="addPlayCounter()">
       <source src="audio/compressed/dan.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="dave">
+    <audio id="dave" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/dave.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="brodie">
+    <audio id="brodie" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="nick">
+    <audio id="nick" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/nick.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="chuck">
+    <audio id="chuck" oncanplay="addPlayCounter()">>
       <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
     </audio>
     <div id="container"></div>
@@ -62,8 +62,12 @@
     <!-- <iframe src="https://player.vimeo.com/video/89936009?autoplay=1&autopause=0&quality=270p" width="640" height="360" frameborder="0"></iframe>
     <iframe src="https://player.vimeo.com/video/35106217?autoplay=1&autopause=0&quality=270p" width="640" height="360" frameborder="0"></iframe> -->
 
-    <script type="text/javascript" src="script.js"></script>
+    <!-- <script type="text/javascript" src="script.js">
+      var dan = document.getElementById("dan");
+      dan.style.volume = 0.8;
+      dan.play();
+    </script> -->
+    <script src="script.js"></script>
 
-    </script>
   </body>
 </html>
