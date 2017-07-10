@@ -39,9 +39,11 @@
     <video oncanplay="videoCanPlay()" id="base-video" webkit-playsinline style="display:none">
       <source src="videos/spirit-trimmed-2.mp4" type='video/mp4;'>
     </video>
-    <!-- <video id="second-video" autoplay loop webkit-playsinline style="display:none">
+
+    <video oncanplay="videoCanPlay()" id="second-video" webkit-playsinline style="display:none">
       <source src="videos/spirit-trimmed.mp4" type='video/mp4;'>
-    </video> -->
+    </video>
+
     <audio class="audioClip" id="dan" oncanplay="addPlayCounter()">
       <source src="audio/compressed/dan.mp3" type="audio/mpeg">
     </audio>

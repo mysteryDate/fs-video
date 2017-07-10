@@ -22,17 +22,23 @@ function makeBarMaterial(options) {
       u_mousePos: {value: new THREE.Vector2(0, 0)},
       u_mouseOver: {value: false},
       u_playing: {value: true},
+      u_videoTexture: {value: options.video},
     },
     vertexShader: `
+      varying vec2 v_uv;
       void main() {
+        v_uv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }`,
     fragmentShader: `
+      varying vec2 v_uv;
+      uniform sampler2D u_videoTexture;
       uniform vec2 u_mousePos;
       uniform vec3 u_color;
       uniform bool u_mouseOver;
       uniform bool u_playing;
       void main() {
+        vec4 tex = texture2D(u_videoTexture, v_uv);
         vec3 col = u_color;
         if (u_playing == false) {
           col *= 0.1;
@@ -40,7 +46,7 @@ function makeBarMaterial(options) {
         if (u_mouseOver == true) {
           col += vec3(0.7);
         }
-        gl_FragColor = vec4(col, 1.0);
+        gl_FragColor = vec4(col + tex.rgb, 1.0);
       }
     `
   });
@@ -52,12 +58,12 @@ function init() {
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
   container.appendChild( renderer.domElement );
-  video = document.getElementById( 'base-video' );
+  video = document.getElementById('base-video');
 
-  // videoTexture = new THREE.VideoTexture( video );
-  // videoTexture.minFilter = THREE.NearestFilter;
-  // videoTexture.magFilter = THREE.NearestFilter;
-  // videoTexture.format = THREE.RGBFormat;
+  videoTexture = new THREE.VideoTexture(video);
+  videoTexture.minFilter = THREE.NearestFilter;
+  videoTexture.magFilter = THREE.NearestFilter;
+  videoTexture.format = THREE.RGBFormat;
 
   camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100000);
   camera.position.z = 50;
@@ -76,7 +82,8 @@ function init() {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
     var hue = Math.random() * 255;
     var mat = makeBarMaterial({
-      color: new THREE.Color("hsl("+hue+", 70%, 50%)")
+      color: new THREE.Color("hsl("+hue+", 70%, 50%)"),
+      video: videoTexture,
     });
     var mesh = new THREE.Mesh(geo, mat);
     mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, -0.5, 0.5);
@@ -119,10 +126,6 @@ function animate() {
   render();
 }
 
-function videoCanPlay() {
-  console.log("play");
-}
-
 document.addEventListener("click", onDocumentClick, false );
 document.addEventListener("mousemove", onDocumentMouseMove, false );
 // var projector = new THREE.Projector();
@@ -160,8 +163,6 @@ function onDocumentMouseMove(event) {
     }
   }
 }
-
-
 
 init();
 animate();
