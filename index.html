@@ -36,12 +36,12 @@
   <body>
     <script src="three.r85.js"></script>
     <script src="TrackballControls.js"></script>
-    <video oncanplay="videoCanPlay()" id="base-video" webkit-playsinline style="display:none">
+    <video oncanplay="addPlayCounter()" id="base-video" webkit-playsinline style="display:none">
       <source src="videos/spirit-trimmed-2.mp4" type='video/mp4;'>
     </video>
 
-    <video oncanplay="videoCanPlay()" id="second-video" webkit-playsinline style="display:none">
-      <source src="videos/spirit-trimmed.mp4" type='video/mp4;'>
+    <video oncanplay="addPlayCounter()" id="second-video" webkit-playsinline style="display:none">
+      <source src="videos/spirit-trimmed-3.mp4" type='video/mp4;'>
     </video>
 
     <audio class="audioClip" id="dan" oncanplay="addPlayCounter()">

@@ -4,6 +4,8 @@ var container;
 var renderer;
 var video;
 var videoTexture;
+var video2;
+var videoTexture2;
 var camera;
 var scene;
 
@@ -23,6 +25,7 @@ function makeBarMaterial(options) {
       u_mouseOver: {value: false},
       u_playing: {value: true},
       u_videoTexture: {value: options.video},
+      u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
     },
     vertexShader: `
       varying vec2 v_uv;
@@ -33,18 +36,21 @@ function makeBarMaterial(options) {
     fragmentShader: `
       varying vec2 v_uv;
       uniform sampler2D u_videoTexture;
+      uniform vec2 u_resolution;
       uniform vec2 u_mousePos;
       uniform vec3 u_color;
       uniform bool u_mouseOver;
       uniform bool u_playing;
       void main() {
-        vec4 tex = texture2D(u_videoTexture, v_uv);
-        vec3 col = u_color;
-        if (u_playing == false) {
-          col *= 0.1;
-        }
+        vec2 uv = gl_FragCoord.xy / u_resolution;
+        vec4 tex = texture2D(u_videoTexture, uv);
+        // vec3 col = u_color;
+        // if (u_playing == false) {
+        //   col *= 0.1;
+        // }
+        vec3 col = vec3(0.0);
         if (u_mouseOver == true) {
-          col += vec3(0.7);
+          col += vec3(0.5);
         }
         gl_FragColor = vec4(col + tex.rgb, 1.0);
       }
@@ -59,11 +65,17 @@ function init() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   container.appendChild( renderer.domElement );
   video = document.getElementById('base-video');
+  video2 = document.getElementById('second-video');
 
   videoTexture = new THREE.VideoTexture(video);
   videoTexture.minFilter = THREE.NearestFilter;
   videoTexture.magFilter = THREE.NearestFilter;
   videoTexture.format = THREE.RGBFormat;
+
+  videoTexture2 = new THREE.VideoTexture(video2);
+  videoTexture2.minFilter = THREE.NearestFilter;
+  videoTexture2.magFilter = THREE.NearestFilter;
+  videoTexture2.format = THREE.RGBFormat;
 
   camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100000);
   camera.position.z = 50;
@@ -78,12 +90,15 @@ function init() {
   // var mesh = new THREE.Mesh(planeGeometry, material);
   // scene.add(mesh);
 
+  size = renderer.getSize();
+  var dpr = renderer.getPixelRatio();
   for (var i = 0; i < audioClips.length; i++) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
     var hue = Math.random() * 255;
     var mat = makeBarMaterial({
       color: new THREE.Color("hsl("+hue+", 70%, 50%)"),
       video: videoTexture,
+      resolution: new THREE.Vector2(size.width * dpr, size.height * dpr),
     });
     var mesh = new THREE.Mesh(geo, mat);
     mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, -0.5, 0.5);
@@ -95,9 +110,12 @@ function init() {
 
 function addPlayCounter() {
   playCounter++;
-  if (playCounter == audioClips.length) {
+  console.log(playCounter);
+  if (playCounter == audioClips.length + 2) {
     for (var i = 0; i < audioClips.length; i++) {
       audioClips[i].play();
+      video.play();
+      video2.play();
     }
   }
 }
@@ -144,6 +162,11 @@ function onDocumentClick(event) {
   }
 
   materials[hoverOver].uniforms.u_playing.value = !materials[hoverOver].uniforms.u_playing.value;
+  if (materials[hoverOver].uniforms.u_playing.value === true) {
+    materials[hoverOver].uniforms.u_videoTexture.value = videoTexture;
+  } else {
+    materials[hoverOver].uniforms.u_videoTexture.value = videoTexture2;
+  }
 }
 
 function onDocumentMouseMove(event) {
