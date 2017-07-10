@@ -11,6 +11,40 @@ var playCounter = 0;
 var audioClips;
 var playHead = 0;
 var controls;
+var size;
+var mousePosition = new THREE.Vector2();
+var materials = [];
+
+function makeBarMaterial(options) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      u_color: {value: options.color || new THREE.Color("pink")},
+      u_mousePos: {value: new THREE.Vector2(0, 0)},
+      u_mouseOver: {value: false},
+      u_playing: {value: true},
+    },
+    vertexShader: `
+      void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+    fragmentShader: `
+      uniform vec2 u_mousePos;
+      uniform vec3 u_color;
+      uniform bool u_mouseOver;
+      uniform bool u_playing;
+      void main() {
+        vec3 col = u_color;
+        if (u_playing == false) {
+          col *= 0.2;
+        }
+        if (u_mouseOver == true) {
+          col += vec3(0.5);
+        }
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+}
 
 function init() {
   container = document.getElementById("container");
@@ -29,22 +63,26 @@ function init() {
   controls = new THREE.TrackballControls(camera, renderer.domElement);
   camera.position.z = 50;
   scene = new THREE.Scene();
-  // var planeGeometry = new THREE.PlaneGeometry(2, 2);
-  // var mat = new THREE.MeshBasicMaterial({map:videoTexture});
-  // var mat = new THREE.MeshBasicMaterial({color: new THREE.Color("pink")});
-  // var mesh = new THREE.Mesh(planeGeometry, mat);
-  // scene.add(mesh);
 
   audioClips = document.getElementsByClassName("audioClip");
 
+  // var planeGeometry = new THREE.PlaneGeometry(2, 2);
+  // // var mat = new THREE.MeshBasicMaterial({map:videoTexture});
+  // // var mat = new THREE.MeshBasicMaterial({color: new THREE.Color("pink")});
+  // material = makeBarMaterial();
+  // var mesh = new THREE.Mesh(planeGeometry, material);
+  // scene.add(mesh);
+
   for (var i = 0; i < audioClips.length; i++) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
-    var mat = new THREE.MeshBasicMaterial({color:new THREE.Color(Math.random(), Math.random(), Math.random())});
+    var mat = makeBarMaterial({
+      color: new THREE.Color(Math.random(), Math.random(), Math.random())
+    });
     var mesh = new THREE.Mesh(geo, mat);
     mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, -0.5, 0.5);
     mesh.position.x += 0.5/audioClips.length;
-    console.log(mesh.position.x);
     scene.add(mesh);
+    materials.push(mat);
   }
 }
 
@@ -85,6 +123,46 @@ function animate() {
 function videoCanPlay() {
   console.log("play");
 }
+
+document.addEventListener("click", onDocumentClick, false );
+document.addEventListener("mousemove", onDocumentMouseMove, false );
+// var projector = new THREE.Projector();
+function onDocumentClick(event) {
+  event.preventDefault();
+
+  size = renderer.getSize();
+  mousePosition.x = event.clientX / size.width;
+  mousePosition.y = 1 - event.clientY / size.height;
+  var hoverOver = Math.floor(mousePosition.x * audioClips.length);
+
+  if (audioClips[hoverOver].volume == 1) {
+    audioClips[hoverOver].volume = 0;
+  } else {
+    audioClips[hoverOver].volume = 1;
+  }
+
+  materials[hoverOver].uniforms.u_playing.value = !materials[hoverOver].uniforms.u_playing.value;
+}
+
+function onDocumentMouseMove(event) {
+  event.preventDefault();
+
+  size = renderer.getSize();
+  mousePosition.x = event.clientX / size.width;
+  mousePosition.y = 1 - event.clientY / size.height;
+
+  var hoverOver = Math.floor(mousePosition.x * audioClips.length);
+
+  for (var i = 0; i < materials.length; i++) {
+    materials[i].uniforms.u_mousePos.value = mousePosition;
+    materials[i].uniforms.u_mouseOver.value = false;
+    if (i == hoverOver) {
+      materials[i].uniforms.u_mouseOver.value = true;
+    }
+  }
+}
+
+
 
 init();
 animate();
