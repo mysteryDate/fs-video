@@ -35,10 +35,10 @@ function makeBarMaterial(options) {
       void main() {
         vec3 col = u_color;
         if (u_playing == false) {
-          col *= 0.2;
+          col *= 0.1;
         }
         if (u_mouseOver == true) {
-          col += vec3(0.5);
+          col += vec3(0.7);
         }
         gl_FragColor = vec4(col, 1.0);
       }
@@ -60,7 +60,6 @@ function init() {
   // videoTexture.format = THREE.RGBFormat;
 
   camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100000);
-  controls = new THREE.TrackballControls(camera, renderer.domElement);
   camera.position.z = 50;
   scene = new THREE.Scene();
 
@@ -75,8 +74,9 @@ function init() {
 
   for (var i = 0; i < audioClips.length; i++) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
+    var hue = Math.random() * 255;
     var mat = makeBarMaterial({
-      color: new THREE.Color(Math.random(), Math.random(), Math.random())
+      color: new THREE.Color("hsl("+hue+", 70%, 50%)")
     });
     var mesh = new THREE.Mesh(geo, mat);
     mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, -0.5, 0.5);
@@ -116,7 +116,6 @@ function render() {
 
 function animate() {
   requestAnimationFrame( animate );
-  controls.update();
   render();
 }
 
