@@ -1,29 +1,29 @@
 "use strict";
 
+// THREE.js stuff
 var container;
 var renderer;
-var video;
-var videoTexture;
-var video2;
-var videoTexture2;
 var camera;
 var scene;
 
-var playCounter = 0;
-var audioClips = document.getElementsByClassName("audioClip");
-var videoClips = document.getElementsByClassName("videoClip");
+// Materials and textures
 var videoTextures = [];
+var barMaterials = [];
+
+// Our media
+var videoClips = document.getElementsByClassName("videoClip");
+var audioClips = document.getElementsByClassName("audioClip");
+
+// Counters and UI
+var playCounter = 0;
 var playHead = 0;
-var controls;
 var size;
 var mousePosition = new THREE.Vector2();
-var barMaterials = [];
 
 function makeBarMaterial(options) {
   return new THREE.ShaderMaterial({
     uniforms: {
       u_color: {value: options.color || new THREE.Color("pink")},
-      u_mousePos: {value: new THREE.Vector2(0, 0)},
       u_mouseOver: {value: false},
       u_playing: {value: true},
       u_videoTexture: {value: options.video},
@@ -31,16 +31,12 @@ function makeBarMaterial(options) {
       u_isColor: {value: true},
     },
     vertexShader: `
-      varying vec2 v_uv;
       void main() {
-        v_uv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }`,
     fragmentShader: `
-      varying vec2 v_uv;
       uniform sampler2D u_videoTexture;
       uniform vec2 u_resolution;
-      uniform vec2 u_mousePos;
       uniform vec3 u_color;
       uniform bool u_mouseOver;
       uniform bool u_playing;
@@ -48,15 +44,13 @@ function makeBarMaterial(options) {
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
-
-        vec3 col = vec3(0.0);
         if (u_mouseOver == true) {
-          col += vec3(0.5);
+          tex += vec3(0.5);
         }
         if (u_isColor == false) {
           tex = vec3(length(tex)/3.0);
         }
-        gl_FragColor = vec4(col + tex, 1.0);
+        gl_FragColor = vec4(tex, 1.0);
       }
     `
   });
@@ -64,10 +58,10 @@ function makeBarMaterial(options) {
 
 function init() {
   container = document.getElementById("container");
-  renderer = new THREE.WebGLRenderer( { antialias: false } );
-  renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  container.appendChild( renderer.domElement );
+  renderer = new THREE.WebGLRenderer({ antialias: false });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
 
   for (var i = 0; i < videoClips.length; i++) {
     var vt = new THREE.VideoTexture(videoClips[i]);
@@ -76,7 +70,7 @@ function init() {
     videoTextures.push(vt);
   }
 
-  camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100000);
+  camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100);
   camera.position.z = 50;
   scene = new THREE.Scene();
 
@@ -84,9 +78,7 @@ function init() {
   var dpr = renderer.getPixelRatio();
   for (var i = 0; i < audioClips.length; i++) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
-    var hue = Math.random() * 255;
     var mat = makeBarMaterial({
-      color: new THREE.Color("hsl("+hue+", 70%, 50%)"),
       video: videoTextures[0],
       resolution: new THREE.Vector2(size.width * dpr, size.height * dpr),
     });
@@ -131,12 +123,12 @@ function render() {
 }
 
 function animate() {
-  requestAnimationFrame( animate );
+  requestAnimationFrame(animate);
   render();
 }
 
-document.addEventListener("click", onDocumentClick, false );
-document.addEventListener("mousemove", onDocumentMouseMove, false );
+document.addEventListener("click", onDocumentClick, false);
+document.addEventListener("mousemove", onDocumentMouseMove, false);
 function onDocumentClick(event) {
   event.preventDefault();
 
@@ -171,7 +163,6 @@ function onDocumentMouseMove(event) {
   var hoverOver = Math.floor(mousePosition.x * audioClips.length);
 
   for (var i = 0; i < barMaterials.length; i++) {
-    barMaterials[i].uniforms.u_mousePos.value = mousePosition;
     barMaterials[i].uniforms.u_mouseOver.value = false;
     if (i == hoverOver) {
       barMaterials[i].uniforms.u_mouseOver.value = true;
