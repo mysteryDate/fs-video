@@ -28,6 +28,7 @@ function makeBarMaterial(options) {
       u_playing: {value: true},
       u_videoTexture: {value: options.video},
       u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
+      u_isColor: {value: true},
     },
     vertexShader: `
       varying vec2 v_uv;
@@ -43,18 +44,19 @@ function makeBarMaterial(options) {
       uniform vec3 u_color;
       uniform bool u_mouseOver;
       uniform bool u_playing;
+      uniform bool u_isColor;
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
-        vec4 tex = texture2D(u_videoTexture, uv);
-        // vec3 col = u_color;
-        // if (u_playing == false) {
-        //   col *= 0.1;
-        // }
+        vec3 tex = texture2D(u_videoTexture, uv).rgb;
+
         vec3 col = vec3(0.0);
         if (u_mouseOver == true) {
           col += vec3(0.5);
         }
-        gl_FragColor = vec4(col + tex.rgb, 1.0);
+        if (u_isColor == false) {
+          tex = vec3(length(tex)/3.0);
+        }
+        gl_FragColor = vec4(col + tex, 1.0);
       }
     `
   });
@@ -152,8 +154,10 @@ function onDocumentClick(event) {
   barMaterials[hoverOver].uniforms.u_playing.value = !barMaterials[hoverOver].uniforms.u_playing.value;
   if (barMaterials[hoverOver].uniforms.u_playing.value === true) {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[0];
+    barMaterials[hoverOver].uniforms.u_isColor.value = true;
   } else {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
+    barMaterials[hoverOver].uniforms.u_isColor.value = false;
   }
 }
 
