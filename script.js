@@ -114,9 +114,9 @@ function addPlayCounter() {
   if (playCounter == audioClips.length + 2) {
     for (var i = 0; i < audioClips.length; i++) {
       audioClips[i].play();
-      video.play();
-      video2.play();
     }
+    video.play();
+    video2.play();
   }
 }
 

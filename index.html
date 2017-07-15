@@ -4,44 +4,19 @@
     <meta charset="utf-8">
     <title>FUTOR STATEZ!</title>
     <style>
-			body {
-				background-color: #000;
-				color: #fff;
-				margin: 0px;
-				overflow: hidden;
-				font-family:Monospace;
-				font-size:13px;
-				text-align:center;
-				font-weight: bold;
-				text-align:center;
-			}
-
-			a {
-				color:#0078ff;
-			}
-
-			#info {
-				color:#fff;
-				position: absolute;
-				top: 5px; width: 100%;
-				z-index:100;
-			}
-
-      audio {
-        width: 1000px;
+      body {
+        margin: 0px;
       }
-
-		</style>
+    </style>
   </head>
   <body>
     <script src="three.r85.js"></script>
-    <script src="TrackballControls.js"></script>
     <video oncanplay="addPlayCounter()" id="base-video" webkit-playsinline style="display:none">
-      <source src="videos/spirit-trimmed-2.mp4" type='video/mp4;'>
+      <source src="videos/small-1.mp4" type='video/mp4;'>
     </video>
 
     <video oncanplay="addPlayCounter()" id="second-video" webkit-playsinline style="display:none">
-      <source src="videos/spirit-trimmed-3.mp4" type='video/mp4;'>
+      <source src="videos/small-2.mp4" type='video/mp4;'>
     </video>
 
     <audio class="audioClip" id="dan" oncanplay="addPlayCounter()">
@@ -65,15 +40,6 @@
     </audio>
     <div id="container"></div>
 
-    <!-- Streaming attempt -->
-    <!-- <iframe src="https://player.vimeo.com/video/89936009?autoplay=1&autopause=0&quality=270p" width="640" height="360" frameborder="0"></iframe>
-    <iframe src="https://player.vimeo.com/video/35106217?autoplay=1&autopause=0&quality=270p" width="640" height="360" frameborder="0"></iframe> -->
-
-    <!-- <script type="text/javascript" src="script.js">
-      var dan = document.getElementById("dan");
-      dan.style.volume = 0.8;
-      dan.play();
-    </script> -->
     <script src="script.js"></script>
 
   </body>
