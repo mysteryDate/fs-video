@@ -1,4 +1,5 @@
 2017-06-04: Start at 6pm, end 8pm (2 hours)
 2017-07-04: 2 hours
 2017-07-10: 4 hours
-2017-07-15: start at 2pm, end at 3:30pm
+2017-07-15: start at 2pm, end at 3:30pm, restart 5:30pm, end at 6:30 pm (2.5 hours)
+2017-07-20: 3 hours
