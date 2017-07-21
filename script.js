@@ -13,9 +13,15 @@ var barMaterials = [];
 // Our media
 var videoClips = document.getElementsByClassName("videoClip");
 var audioClips = document.getElementsByClassName("audioClip");
+var readyStates = {};
+for (var i = 0; i < audioClips.length; i++) {
+  readyStates[audioClips[i].id] = false;
+}
+for (var i = 0; i < videoClips.length; i++) {
+  readyStates[videoClips[i].id] = false;
+}
 
 // Counters and UI
-var playCounter = 0;
 var playHead = 0;
 var size;
 var mousePosition = new THREE.Vector2();
@@ -23,9 +29,8 @@ var mousePosition = new THREE.Vector2();
 function makeBarMaterial(options) {
   return new THREE.ShaderMaterial({
     uniforms: {
-      u_color: {value: options.color || new THREE.Color("pink")},
-      u_mouseOver: {value: false},
       u_playing: {value: true},
+      u_mouseOver: {value: false},
       u_videoTexture: {value: options.video},
       u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
       u_isColor: {value: true},
@@ -37,9 +42,7 @@ function makeBarMaterial(options) {
     fragmentShader: `
       uniform sampler2D u_videoTexture;
       uniform vec2 u_resolution;
-      uniform vec3 u_color;
       uniform bool u_mouseOver;
-      uniform bool u_playing;
       uniform bool u_isColor;
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
@@ -90,10 +93,11 @@ function init() {
   }
 }
 
-function addPlayCounter() {
-  playCounter++;
-  console.log(playCounter);
-  if (playCounter == audioClips.length + videoClips.length) {
+function addPlayCounter(event) {
+  readyStates[event.target.id] = true;
+
+  var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
+  if (readyToPlay) {
     for (var i = 0; i < audioClips.length; i++) {
       audioClips[i].play();
     }
@@ -106,8 +110,9 @@ function addPlayCounter() {
 // This doesn't acutally work
 function sync(time) {
   playHead = (time !== undefined) ? time : audioClips[0].currentTime;
-  playCounter = 0;
   for (var i = 0; i < audioClips.length; i++) {
+    readyStates[audioClips[i].id] = false;
+    audioClips[i].pause();
     audioClips[i].currentTime = playHead;
   }
 }
