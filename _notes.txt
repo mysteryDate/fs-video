@@ -1,0 +1,10 @@
+bloom
+pixellation
+
+buttons:
+  stop-reset
+  closed caption
+  quality
+
+test mobile
+credits at the end
