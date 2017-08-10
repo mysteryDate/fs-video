@@ -95,6 +95,7 @@ function init() {
 
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
+  console.log(event);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
   if (readyToPlay) {

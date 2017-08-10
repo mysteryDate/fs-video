@@ -31,11 +31,10 @@ float map(float value, float inMin, float inMax, float outMin, float outMax) {
 
 void main()
 {
-  float numSides = 10.0 * (sin(iGlobalTime)/2.0 + 0.5) + sqrt(3.0);
+  float numSides = 4.0 * (sin(iGlobalTime)/2.0 + 0.5) + sqrt(3.0);
   // numSides = floor(numSides) + cubicInOut(fract(numSides));
   numSides = numSides * numSides;
   // numSides = 3.;
-  float shape = PI * 2.0/numSides;
   // numSides = 1.3;
 
   vec2 uv = gl_FragCoord.xy/iResolution.xy;
@@ -45,6 +44,7 @@ void main()
   // uv.x = abs(uv.x);
 
   float theta = angle(uv);
+  float shape = PI * 2.0/numSides;
 
   // c = pulse(0.49, 0.5, 0.005, shape);
   float c = theta/shape;
@@ -54,7 +54,7 @@ void main()
   // c = cos(c - theta);
   // float c = cos(floor(0.5 + theta/r)*r - theta) * length(uv);
   // c = pulse(0.9, 1.0, 0.01, theta);
-  c *= length(uv);
+  c *= length(uv) / cos(PI/numSides);
   // c = numSides/100.;
   c = pulse(0.49, 0.5, 0.0001, c);
 
