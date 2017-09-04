@@ -1,5 +1,7 @@
 "use strict";
 
+var AUDIO_DELAY = 3500; // ms between start of video and audio
+
 // THREE.js stuff
 var container;
 var renderer;
@@ -99,12 +101,15 @@ function addPlayCounter(event) {
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
   if (readyToPlay) {
-    for (var i = 0; i < audioClips.length; i++) {
-      audioClips[i].play();
-    }
     for (var i = 0; i < videoClips.length; i++) {
       videoClips[i].play();
+      videoClips[i].volume = 0;
     }
+    setTimeout(function() {
+      for (var i = 0; i < audioClips.length; i++) {
+        audioClips[i].play();
+      }
+    }, AUDIO_DELAY);
   }
 }
 
