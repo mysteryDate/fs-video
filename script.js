@@ -1,6 +1,6 @@
 "use strict";
 
-var AUDIO_DELAY = 3500; // ms between start of video and audio
+var AUDIO_DELAY = 3600; // ms between start of video and audio
 
 // THREE.js stuff
 var container;
@@ -76,7 +76,7 @@ function init() {
   }
 
   camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100);
-  camera.position.z = 50;
+  camera.position.set(0.5, 0.5, 50);
   scene = new THREE.Scene();
 
   size = renderer.getSize();
@@ -88,8 +88,9 @@ function init() {
       resolution: new THREE.Vector2(size.width * dpr, size.height * dpr),
     });
     var mesh = new THREE.Mesh(geo, mat);
-    mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, -0.5, 0.5);
+    mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, 0, 1);
     mesh.position.x += 0.5/audioClips.length;
+    mesh.position.y = 0.5;
     scene.add(mesh);
     barMaterials.push(mat);
   }
@@ -97,7 +98,7 @@ function init() {
 
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
-  console.log(event);
+  // console.log(event);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
   if (readyToPlay) {
