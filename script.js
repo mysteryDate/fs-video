@@ -63,7 +63,7 @@ function makeBarMaterial(options) {
 
 function init() {
   container = document.getElementById("container");
-  renderer = new THREE.WebGLRenderer({ antialias: false });
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
@@ -108,7 +108,7 @@ function addPlayCounter(event) {
     }
     setTimeout(function() {
       for (var i = 0; i < audioClips.length; i++) {
-        audioClips[i].play();
+        // audioClips[i].play();
       }
     }, AUDIO_DELAY);
   }
