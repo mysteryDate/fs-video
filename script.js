@@ -108,7 +108,7 @@ function addPlayCounter(event) {
     }
     setTimeout(function() {
       for (var i = 0; i < audioClips.length; i++) {
-        // audioClips[i].play();
+        audioClips[i].play();
       }
     }, AUDIO_DELAY);
   }
