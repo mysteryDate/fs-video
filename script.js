@@ -24,11 +24,18 @@ for (var i = 0; i < videoClips.length; i++) {
 }
 var lyricsTextField = document.getElementById("lyricsText");
 var lyricsJSON;
+var lyricsIndex = 0;
 
 // Counters and UI
 var playHead = 0;
 var size;
 var mousePosition = new THREE.Vector2();
+
+function timeStringToInt(time) {
+  var minutes = parseInt(time.split(":")[0]);
+  var seconds = parseInt(time.split(":")[1]);
+  return minutes * 60 + seconds;
+}
 
 function makeBarMaterial(options) {
   return new THREE.ShaderMaterial({
@@ -145,7 +152,24 @@ function render() {
 function animate() {
   requestAnimationFrame(animate);
   render();
-  lyricsTextField.textContent = videoClips[0].currentTime;
+  if (lyricsJSON !== undefined) {
+    var t = audioClips[0].currentTime;
+    var currentLyric = lyricsJSON[lyricsIndex];
+    var nextLyric = lyricsJSON[lyricsIndex + 1];
+    var nextStart = (nextLyric !== undefined) ? timeStringToInt(nextLyric.startTime) : Infinity;
+    var thisStart = timeStringToInt(currentLyric.startTime);
+    var thisEnd = timeStringToInt(currentLyric.endTime);
+    if (t >= nextStart) {
+      lyricsIndex++;
+      lyricsTextField.textContent = nextLyric.lyrics[0];
+    } else if (t >= thisEnd) {
+      lyricsTextField.textContent = "";
+    } else {
+      var lyricsLength = currentLyric.lyrics.length;
+      var normalizedPosition = (t - thisStart) / (thisEnd - thisStart);
+      lyricsTextField.textContent = currentLyric.lyrics[Math.floor(normalizedPosition * lyricsLength)];
+    }
+  }
 }
 
 document.addEventListener("click", onDocumentClick, false);

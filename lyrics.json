@@ -1,6 +1,6 @@
 [{
-    "startTime": 0.22,
-    "endTime": 0.29,
+    "startTime": "0:22",
+    "endTime": "0:29",
     "lyrics": ["you took the sun ",
       "you took the rain ",
       "you took the strange years"
@@ -8,8 +8,8 @@
   },
 
   {
-    "startTime": 0.29,
-    "endTime": 0.36,
+    "startTime": "0:29",
+    "endTime": "0:36",
     "lyrics": ["just to keep it inside",
       "the whole thing only to find ",
       "that you were gone",
@@ -18,8 +18,8 @@
   },
 
   {
-    "startTime": 0.37,
-    "endTime": 0.43,
+    "startTime": "0:37",
+    "endTime": "0:43",
     "lyrics": ["back to the start ",
       "a murmured heart ",
       "morning let the lights in "
@@ -27,8 +27,8 @@
   },
 
   {
-    "startTime": 0.44,
-    "endTime": 0.54,
+    "startTime": "0:44",
+    "endTime": "0:54",
     "lyrics": ["straight through the eyes",
       "the t.v stayed on all night killing time",
       "i think you got it all wrong "
@@ -36,8 +36,8 @@
   },
 
   {
-    "startTime": 0.59,
-    "endTime": 1.04,
+    "startTime": "0:59",
+    "endTime": "1:04",
     "lyrics": ["tripping the kids",
       "you had the angle but slipped ",
       "you were young then"
@@ -45,8 +45,8 @@
   },
 
   {
-    "startTime": 1.06,
-    "endTime": 1.11,
+    "startTime": "1:06",
+    "endTime": "1:11",
     "lyrics": ["strung by the teeth",
       "the silence sounded so sweet ",
       "when it broke "
@@ -54,8 +54,8 @@
   },
 
   {
-    "startTime": 1.12,
-    "endTime": 1.19,
+    "startTime": "1:12",
+    "endTime": "1:19",
     "lyrics": ["you simply stood there like ",
       "a print on display",
       "the people put out and paid ",
@@ -64,8 +64,8 @@
   },
 
   {
-    "startTime": 1.21,
-    "endTime": 1.32,
+    "startTime": "1:21",
+    "endTime": "1:32",
     "lyrics": ["voice on the line ",
       "pretending everything is fine had to go",
       "i think you got it all wrong "
@@ -73,8 +73,8 @@
   },
 
   {
-    "startTime": 1.36,
-    "endTime": 1.41,
+    "startTime": "1:36",
+    "endTime": "1:41",
     "lyrics": ["one takes the three",
       "the cash it seems",
       "we’re loosing money "
@@ -82,8 +82,8 @@
   },
 
   {
-    "startTime": 1.43,
-    "endTime": 1.48,
+    "startTime": "1:43",
+    "endTime": "1:48",
     "lyrics": ["grabbed by the throat",
       "they pulled your hair back and choked",
       "like a dog"
@@ -91,8 +91,8 @@
   },
 
   {
-    "startTime": 1.50,
-    "endTime": 1.56,
+    "startTime": "1:50",
+    "endTime": "1:56",
     "lyrics": ["you took the sun",
       "you took the rain",
       "you took the strange years"
@@ -100,8 +100,8 @@
   },
 
   {
-    "startTime": 1.57,
-    "endTime": 2.07,
+    "startTime": "1:57",
+    "endTime": "2:07",
     "lyrics": ["just to keep it inside",
       "the whole thing only",
       "you were gone",
