@@ -22,6 +22,8 @@ for (var i = 0; i < audioClips.length; i++) {
 for (var i = 0; i < videoClips.length; i++) {
   readyStates[videoClips[i].id] = false;
 }
+var lyricsTextField = document.getElementById("lyricsText");
+var lyricsJSON;
 
 // Counters and UI
 var playHead = 0;
@@ -94,6 +96,11 @@ function init() {
     scene.add(mesh);
     barMaterials.push(mat);
   }
+
+  loadJSON(function(response) {
+  // Parse JSON string into object
+    lyricsJSON = JSON.parse(response);
+  });
 }
 
 function addPlayCounter(event) {
@@ -109,6 +116,7 @@ function addPlayCounter(event) {
     setTimeout(function() {
       for (var i = 0; i < audioClips.length; i++) {
         audioClips[i].play();
+        audioClips[i].volume = 0;
       }
     }, AUDIO_DELAY);
   }
@@ -137,6 +145,7 @@ function render() {
 function animate() {
   requestAnimationFrame(animate);
   render();
+  lyricsTextField.textContent = videoClips[0].currentTime;
 }
 
 document.addEventListener("click", onDocumentClick, false);
@@ -180,6 +189,20 @@ function onDocumentMouseMove(event) {
       barMaterials[i].uniforms.u_mouseOver.value = true;
     }
   }
+}
+
+function loadJSON(callback) {
+
+  var xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open('GET', 'lyrics.json', true);
+  xobj.onreadystatechange = function () {
+    if (xobj.readyState == 4 && xobj.status == "200") {
+      // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+      callback(xobj.responseText);
+    }
+  };
+  xobj.send(null);
 }
 
 init();
