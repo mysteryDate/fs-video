@@ -44,7 +44,6 @@ function makeBarMaterial(options) {
       u_mouseOver: {value: false},
       u_videoTexture: {value: options.video},
       u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
-      u_isColor: {value: true},
     },
     vertexShader: `
       void main() {
@@ -54,15 +53,11 @@ function makeBarMaterial(options) {
       uniform sampler2D u_videoTexture;
       uniform vec2 u_resolution;
       uniform bool u_mouseOver;
-      uniform bool u_isColor;
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
         if (u_mouseOver == true) {
-          tex += vec3(0.5);
-        }
-        if (u_isColor == false) {
-          tex = vec3(length(tex)/3.0);
+          tex += vec3(0.2);
         }
         gl_FragColor = vec4(tex, 1.0);
       }
@@ -123,7 +118,7 @@ function addPlayCounter(event) {
     setTimeout(function() {
       for (var i = 0; i < audioClips.length; i++) {
         audioClips[i].play();
-        audioClips[i].volume = 0;
+        // audioClips[i].volume = 0;
       }
     }, AUDIO_DELAY);
   }
@@ -136,6 +131,18 @@ function sync(time) {
     readyStates[audioClips[i].id] = false;
     audioClips[i].pause();
     audioClips[i].currentTime = playHead;
+  }
+}
+
+function pause() {
+  // playHead = (time !== undefined) ? time : audioClips[0].currentTime;
+  for (var i = 0; i < audioClips.length; i++) {
+    // readyStates[audioClips[i].id] = false;
+    audioClips[i].pause();
+    // audioClips[i].currentTime = playHead;
+  }
+  for (var i = 0; i < videoClips.length; i++) {
+    videoClips[i].pause();
   }
 }
 
@@ -191,10 +198,8 @@ function onDocumentClick(event) {
   barMaterials[hoverOver].uniforms.u_playing.value = !barMaterials[hoverOver].uniforms.u_playing.value;
   if (barMaterials[hoverOver].uniforms.u_playing.value === true) {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[0];
-    barMaterials[hoverOver].uniforms.u_isColor.value = true;
   } else {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
-    barMaterials[hoverOver].uniforms.u_isColor.value = false;
   }
 }
 
