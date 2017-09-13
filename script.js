@@ -107,6 +107,7 @@ function init() {
 
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
+  console.log(readyStates);
   // console.log(event);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
@@ -131,6 +132,11 @@ function sync(time) {
     readyStates[audioClips[i].id] = false;
     audioClips[i].pause();
     audioClips[i].currentTime = playHead;
+  }
+  for (var i = 0; i < videoClips.length; i++) {
+    readyStates[videoClips[i].id] = false;
+    videoClips[i].pause();
+    videoClips[i].currentTime = playHead;
   }
 }
 
