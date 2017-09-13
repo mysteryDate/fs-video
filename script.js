@@ -26,10 +26,70 @@ var lyricsTextField = document.getElementById("lyricsText");
 var lyricsJSON;
 var lyricsIndex = 0;
 
+var LOADING_SCREEN;
 // Counters and UI
 var playHead = 0;
 var size;
 var mousePosition = new THREE.Vector2();
+
+var loadingIconMaterial = new THREE.ShaderMaterial({
+  name: "loading",
+  uniforms: {
+    u_mouse: {value: new THREE.Vector2(0, 0)},
+    u_time: {value: 0},
+  },
+  vertexShader: `
+    varying vec2 v_uv;
+    void main() {
+      v_uv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec2 v_uv;
+    uniform vec2 u_mouse;
+    uniform float u_time;
+    float pulse(float center, float width, float sharpness, float x) {
+      float left = center - width / 2.0;
+      float right = center + width / 2.0;
+      float leftEdge = smoothstep(left - sharpness, left + sharpness, x);
+      float rightEdge = smoothstep(right + sharpness, right - sharpness, x);
+      return leftEdge * rightEdge;
+    }
+
+    float rectSDF(vec2 st, vec2 s) {
+      st = st * 2.0 - 1.0;
+      return max(abs(st.x/s.x), abs(st.y/s.y));
+    }
+
+    float crossSDF(vec2 st, float s) {
+      vec2 size = vec2(0.25, s);
+      return min(rectSDF(st, size.xy), rectSDF(st, size.yx));
+    }
+
+    float sharpness = 0.2;
+    float width = 0.2;
+    float center = 0.5;
+    void main() {
+      vec3 color = vec3(0.0);
+      vec2 st = v_uv;
+
+      // width = u_mouse.x;
+      sharpness = u_mouse.y;
+      center = u_mouse.x;
+
+      float cross = crossSDF(st, 0.6 + 0.5 * sin(u_time / 4.0));
+      color.r += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
+      cross = crossSDF(st, 0.6 + 0.2 * sin(u_time / 2.0));
+      color.g += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
+      cross = crossSDF(st, 0.6 + 0.1 * sin(u_time / 1.0));
+      color.b += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
+      color *= sharpness/2.0 + 1.0;
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `,
+});
 
 function timeStringToInt(time) {
   var minutes = parseInt(time.split(":")[0]);
@@ -39,11 +99,13 @@ function timeStringToInt(time) {
 
 function makeBarMaterial(options) {
   return new THREE.ShaderMaterial({
+    transparent: true,
     uniforms: {
       u_playing: {value: true},
       u_mouseOver: {value: false},
       u_videoTexture: {value: options.video},
       u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
+      u_opacity: {value: 0},
     },
     vertexShader: `
       void main() {
@@ -52,6 +114,7 @@ function makeBarMaterial(options) {
     fragmentShader: `
       uniform sampler2D u_videoTexture;
       uniform vec2 u_resolution;
+      uniform float u_opacity;
       uniform bool u_mouseOver;
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
@@ -59,7 +122,7 @@ function makeBarMaterial(options) {
         if (u_mouseOver == true) {
           tex += vec3(0.2);
         }
-        gl_FragColor = vec4(tex, 1.0);
+        gl_FragColor = vec4(tex, u_opacity);
       }
     `
   });
@@ -99,19 +162,29 @@ function init() {
     barMaterials.push(mat);
   }
 
+  LOADING_SCREEN = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), loadingIconMaterial);
+  LOADING_SCREEN.position.set(0.5, 0.5, 0);
+  scene.add(LOADING_SCREEN);
+
   loadJSON(function(response) {
   // Parse JSON string into object
     lyricsJSON = JSON.parse(response);
   });
 }
 
+var videoStartTime;
+var playing = false;
+var FADE_IN_TIME = 3000;
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
   console.log(readyStates);
   // console.log(event);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
-  if (readyToPlay) {
+  // if (readyToPlay) {
+  if (false) {
+    playing = true;
+    videoStartTime = performance.now();
     for (var i = 0; i < videoClips.length; i++) {
       videoClips[i].play();
       videoClips[i].volume = 0;
@@ -162,8 +235,17 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function animate() {
-  requestAnimationFrame(animate);
+function update() {
+  if (playing) {
+    var videoT = performance.now() - videoStartTime;
+    for (var i = 0; i < barMaterials.length; i++) {
+      barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
+    }
+  }
+  else {
+    LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
+  }
+  requestAnimationFrame(update);
   render();
   if (lyricsJSON !== undefined) {
     var t = audioClips[0].currentTime;
@@ -207,6 +289,10 @@ function onDocumentClick(event) {
   } else {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
   }
+
+  if (!playing) {
+
+  }
 }
 
 function onDocumentMouseMove(event) {
@@ -223,6 +309,11 @@ function onDocumentMouseMove(event) {
     if (i == hoverOver) {
       barMaterials[i].uniforms.u_mouseOver.value = true;
     }
+  }
+
+  if (!playing) {
+    LOADING_SCREEN.material.uniforms.u_mouse.value.x = mousePosition.x;
+    LOADING_SCREEN.material.uniforms.u_mouse.value.y = mousePosition.y;
   }
 }
 
@@ -241,4 +332,4 @@ function loadJSON(callback) {
 }
 
 init();
-animate();
+update();
