@@ -37,6 +37,7 @@ var loadingIconMaterial = new THREE.ShaderMaterial({
   uniforms: {
     u_mouse: {value: new THREE.Vector2(0, 0)},
     u_time: {value: 0},
+    u_state: {value: 0},
   },
   vertexShader: `
     varying vec2 v_uv;
@@ -49,6 +50,7 @@ var loadingIconMaterial = new THREE.ShaderMaterial({
     varying vec2 v_uv;
     uniform vec2 u_mouse;
     uniform float u_time;
+    uniform int u_state;
     float pulse(float center, float width, float sharpness, float x) {
       float left = center - width / 2.0;
       float right = center + width / 2.0;
@@ -74,9 +76,18 @@ var loadingIconMaterial = new THREE.ShaderMaterial({
       vec3 color = vec3(0.0);
       vec2 st = v_uv;
 
-      // width = u_mouse.x;
-      sharpness = u_mouse.y;
-      center = u_mouse.x;
+      if (u_state == 0) {
+        sharpness = u_mouse.y;
+        width = u_mouse.x;
+      }
+      if (u_state == 1) {
+        sharpness = u_mouse.y;
+        center = u_mouse.x;
+      }
+      if (u_state == 2) {
+        width = u_mouse.y;
+        center = u_mouse.x;
+      }
 
       float cross = crossSDF(st, 0.6 + 0.5 * sin(u_time / 4.0));
       color.r += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
@@ -162,7 +173,8 @@ function init() {
     barMaterials.push(mat);
   }
 
-  LOADING_SCREEN = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), loadingIconMaterial);
+  var loadingScreenSize = 0.8;
+  LOADING_SCREEN = new THREE.Mesh(new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize), loadingIconMaterial);
   LOADING_SCREEN.position.set(0.5, 0.5, 0);
   scene.add(LOADING_SCREEN);
 
@@ -177,12 +189,12 @@ var playing = false;
 var FADE_IN_TIME = 3000;
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
-  console.log(readyStates);
+  // console.log(readyStates);
   // console.log(event);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
-  // if (readyToPlay) {
-  if (false) {
+  if (readyToPlay) {
+  // if (false) {
     playing = true;
     videoStartTime = performance.now();
     for (var i = 0; i < videoClips.length; i++) {
@@ -291,7 +303,9 @@ function onDocumentClick(event) {
   }
 
   if (!playing) {
-
+    var state = LOADING_SCREEN.material.uniforms.u_state.value;
+    state = (state + 1) % 3;
+    LOADING_SCREEN.material.uniforms.u_state.value = state;
   }
 }
 
