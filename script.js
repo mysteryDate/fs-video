@@ -241,6 +241,9 @@ function printCurrentTimes() {
   for (var i = 0; i < audioClips.length; i++) {
     console.log(audioClips[i].currentTime);
   }
+  for (var i = 0; i < videoClips.length; i++) {
+    console.log(videoClips[i].currentTime);
+  }
 }
 
 function render() {
@@ -335,7 +338,7 @@ function loadJSON(callback) {
 
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open('GET', 'lyrics.json', true);
+  xobj.open('GET', 'lyrics_block.json', true);
   xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == "200") {
       // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
