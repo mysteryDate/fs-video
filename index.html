@@ -23,31 +23,31 @@
     </style>
   </head>
   <body>
-    <video class="videoClip" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
+    <video class="videoClip" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
       <source src="videos/performance.mp4" type='video/mp4;'>
     </video>
 
-    <video class="videoClip" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
+    <video class="videoClip" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
       <source src="videos/action-1.mp4" type='video/mp4;'>
     </video>
 
-    <audio class="audioClip" id="brodie" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="brodie" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="nick" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="nick" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/nick.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="chuck" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="chuck" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="dan" oncanplay="addPlayCounter(event)">
+    <audio class="audioClip" id="dan" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">
       <source src="audio/compressed/dan.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="dave" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="dave" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/dave.mp3" type="audio/mpeg">
     </audio>
 

@@ -40,6 +40,7 @@ float rotatedCross(vec2 st, float theta) {
 
 void main() {
   vec3 color = vec3(0.0);
+  float a = 1;
   vec2 st = gl_FragCoord.xy / iResolution.xy;
   // st = rotateAboutPoint(st, u_time, vec2(0.5));
 

@@ -15,6 +15,7 @@ var barMaterials = [];
 // Our media
 var videoClips = document.getElementsByClassName("videoClip");
 var audioClips = document.getElementsByClassName("audioClip");
+var mediaClips = videoClips + audioClips;
 var readyStates = {};
 for (var i = 0; i < audioClips.length; i++) {
   readyStates[audioClips[i].id] = false;
@@ -131,7 +132,8 @@ function makeBarMaterial(options) {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
         if (u_mouseOver == true) {
-          tex += vec3(0.2);
+          // tex += vec3(0.2);
+          tex *= vec3(1., 0., 1.);
         }
         gl_FragColor = vec4(tex, u_opacity);
       }
@@ -185,7 +187,7 @@ function init() {
 }
 
 var videoStartTime;
-var playing = false;
+var PLAYING = false;
 var FADE_IN_TIME = 3000;
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
@@ -193,9 +195,10 @@ function addPlayCounter(event) {
   // console.log(event);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
+  // readyToPlay = false;
   if (readyToPlay) {
   // if (false) {
-    playing = true;
+    PLAYING = true;
     videoStartTime = performance.now();
     for (var i = 0; i < videoClips.length; i++) {
       videoClips[i].play();
@@ -251,7 +254,7 @@ function render() {
 }
 
 function update() {
-  if (playing) {
+  if (PLAYING) {
     var videoT = performance.now() - videoStartTime;
     for (var i = 0; i < barMaterials.length; i++) {
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
@@ -305,7 +308,7 @@ function onDocumentClick(event) {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
   }
 
-  if (!playing) {
+  if (!PLAYING) {
     var state = LOADING_SCREEN.material.uniforms.u_state.value;
     state = (state + 1) % 3;
     LOADING_SCREEN.material.uniforms.u_state.value = state;
@@ -328,14 +331,19 @@ function onDocumentMouseMove(event) {
     }
   }
 
-  if (!playing) {
+  if (!PLAYING) {
     LOADING_SCREEN.material.uniforms.u_mouse.value.x = mousePosition.x;
     LOADING_SCREEN.material.uniforms.u_mouse.value.y = mousePosition.y;
   }
 }
 
-function loadJSON(callback) {
+function waiting(event) {
+  if (PLAYING) {
 
+  }
+}
+
+function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open('GET', 'lyrics_block.json', true);

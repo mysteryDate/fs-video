@@ -53,4 +53,5 @@ void main() {
   color.b += smoothstep(0.3, 0.5, fract(cross * 1.0 * (sin(u_time / 4.0) + 1.1)));
 
   gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(st, 1.0, 1.0);
 }
