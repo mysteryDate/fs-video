@@ -28,6 +28,11 @@ var lyricsJSON;
 var lyricsIndex = 0;
 
 var LOADING_SCREEN;
+var videoStartTime;
+var PLAYING = false;
+var FADE_IN_TIME = 3000;
+var LYRICS_ON = false;
+
 // Counters and UI
 var playHead = 0;
 var size;
@@ -186,9 +191,6 @@ function init() {
   });
 }
 
-var videoStartTime;
-var PLAYING = false;
-var FADE_IN_TIME = 3000;
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
   // console.log(readyStates);
@@ -229,17 +231,16 @@ function sync(time) {
 }
 
 function pause() {
-  // playHead = (time !== undefined) ? time : audioClips[0].currentTime;
   var paused = audioClips[0].paused;
-  console.log(paused);
   for (var i = 0; i < audioClips.length; i++) {
     // readyStates[audioClips[i].id] = false;
     if (!paused) {
+      PLAYING = false;
       audioClips[i].pause();
     } else {
+      PLAYING = true;
       audioClips[i].play();
     }
-    // audioClips[i].currentTime = playHead;
   }
   for (var i = 0; i < videoClips.length; i++) {
     if (!paused) {
@@ -263,18 +264,7 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function update() {
-  if (PLAYING) {
-    var videoT = performance.now() - videoStartTime;
-    for (var i = 0; i < barMaterials.length; i++) {
-      barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
-    }
-  }
-  else {
-    LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
-  }
-  requestAnimationFrame(update);
-  render();
+function setLyrics() {
   if (lyricsJSON !== undefined) {
     var t = audioClips[0].currentTime;
     var currentLyric = lyricsJSON[lyricsIndex];
@@ -292,12 +282,28 @@ function update() {
       var normalizedPosition = (t - thisStart) / (thisEnd - thisStart);
       lyricsTextField.textContent = currentLyric.lyrics[Math.floor(normalizedPosition * lyricsLength)];
     }
-    if (lyricsTextField.textContent == "") {
+    if (lyricsTextField.textContent == "" || LYRICS_ON == false) {
       lyricsTextField.style.display = "none";
     } else {
       lyricsTextField.style.display = "inline-block";
     }
   }
+}
+
+function update() {
+  if (PLAYING) {
+    var videoT = performance.now() - videoStartTime;
+    for (var i = 0; i < barMaterials.length; i++) {
+      barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
+    }
+  }
+  else {
+    LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
+  }
+  requestAnimationFrame(update);
+  render();
+  setLyrics();
+
 }
 
 document.addEventListener("click", onDocumentClick, false);
@@ -354,8 +360,14 @@ function onDocumentMouseMove(event) {
 
 function waiting(event) {
   if (PLAYING) {
-
+    // pause();
   }
+  console.log(event);
+}
+
+function toggleLyrics(event) {
+  event.stopPropagation();
+  LYRICS_ON = !LYRICS_ON;
 }
 
 function loadJSON(callback) {

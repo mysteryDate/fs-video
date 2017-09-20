@@ -28,34 +28,44 @@
         padding: 10px 20px;
         border-radius: 10px;
       }
+      #cc-button {
+        position: absolute;
+        width: 54px;
+        height: 40px;
+        bottom: 0px;
+        right: 10%;
+        background-image: url(cc-button.jpg);
+        background-size: 100%;
+        background-repeat: no-repeat;
+      }
     </style>
   </head>
   <body>
-    <video class="videoClip" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
+    <video class="videoClip" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
       <source src="videos/performance.mp4" type='video/mp4;'>
     </video>
 
-    <video class="videoClip" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
+    <video class="videoClip" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
       <source src="videos/action-1.mp4" type='video/mp4;'>
     </video>
 
-    <audio class="audioClip" id="brodie" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="brodie" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="nick" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="nick" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/nick.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="chuck" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="chuck" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="dan" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">
+    <audio class="audioClip" id="dan" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">
       <source src="audio/compressed/dan.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="dave" onwaiting="logWaiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="audioClip" id="dave" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
       <source src="audio/compressed/dave.mp3" type="audio/mpeg">
     </audio>
 
@@ -64,6 +74,8 @@
       <div id="lyricsText">
       </div>
     </div>
+
+    <div id="cc-button" onclick="toggleLyrics(event)"></div>
 
     <script src="script.js"></script>
   </body>
