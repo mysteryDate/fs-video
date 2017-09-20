@@ -9,4 +9,6 @@
 2017-08-10: start at 530, end at 630, 1 hour
 2017-08-12: 1 hour
 2017-08-16: 2 hours (ccapture experiments)
-2017-09-11: 3 hours (lyrics) 
+2017-09-11: 3 hours (lyrics)
+Total: 27
+2017-09-19: 2 hours -> lyrics formatting

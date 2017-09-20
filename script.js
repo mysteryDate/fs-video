@@ -230,13 +230,23 @@ function sync(time) {
 
 function pause() {
   // playHead = (time !== undefined) ? time : audioClips[0].currentTime;
+  var paused = audioClips[0].paused;
+  console.log(paused);
   for (var i = 0; i < audioClips.length; i++) {
     // readyStates[audioClips[i].id] = false;
-    audioClips[i].pause();
+    if (!paused) {
+      audioClips[i].pause();
+    } else {
+      audioClips[i].play();
+    }
     // audioClips[i].currentTime = playHead;
   }
   for (var i = 0; i < videoClips.length; i++) {
-    videoClips[i].pause();
+    if (!paused) {
+      videoClips[i].pause();
+    } else {
+      videoClips[i].play();
+    }
   }
 }
 
@@ -281,6 +291,11 @@ function update() {
       var lyricsLength = currentLyric.lyrics.length;
       var normalizedPosition = (t - thisStart) / (thisEnd - thisStart);
       lyricsTextField.textContent = currentLyric.lyrics[Math.floor(normalizedPosition * lyricsLength)];
+    }
+    if (lyricsTextField.textContent == "") {
+      lyricsTextField.style.display = "none";
+    } else {
+      lyricsTextField.style.display = "inline-block";
     }
   }
 }
