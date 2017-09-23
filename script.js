@@ -191,27 +191,30 @@ function init() {
   });
 }
 
+var PAUSED = false;
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
-  // console.log(readyStates);
-  // console.log(event);
+  console.log(event.target.id + ": " + event.type);
+  console.log(readyStates);
 
   var readyToPlay = (Object.values(readyStates).indexOf(false) == -1);
-  // readyToPlay = false;
-  if (readyToPlay) {
-  // if (false) {
+  if (readyToPlay && !PAUSED) {
     PLAYING = true;
     videoStartTime = performance.now();
     for (var i = 0; i < videoClips.length; i++) {
+      // var isPlaying = videoClips[i].currentTime > 0 && !videoClips[i].paused && !videoClips[i].ended && videoClips[i].readyState > 2;
+      // if (!isPlaying) {
+      // }
       videoClips[i].play();
       videoClips[i].volume = 0;
     }
     setTimeout(function() {
       for (var i = 0; i < audioClips.length; i++) {
         audioClips[i].play();
-        // audioClips[i].volume = 0;
       }
     }, AUDIO_DELAY);
+  } else if (readyToPlay && PAUSED) {
+    pause();
   }
 }
 
@@ -233,12 +236,13 @@ function sync(time) {
 function pause() {
   var paused = audioClips[0].paused;
   for (var i = 0; i < audioClips.length; i++) {
-    // readyStates[audioClips[i].id] = false;
     if (!paused) {
       PLAYING = false;
+      PAUSED = true;
       audioClips[i].pause();
     } else {
       PLAYING = true;
+      PAUSED = false;
       audioClips[i].play();
     }
   }
@@ -360,9 +364,11 @@ function onDocumentMouseMove(event) {
 
 function waiting(event) {
   if (PLAYING) {
-    // pause();
+    pause();
   }
-  console.log(event);
+  readyStates[event.target.id] = false;
+  console.log(event.target.id + ": " + event.type);
+  console.log(readyStates);
 }
 
 function toggleLyrics(event) {
