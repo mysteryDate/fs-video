@@ -15,8 +15,8 @@ var videoTextures = [];
 var barMaterials = [];
 
 // Our media
-var videoClips = document.getElementsByClassName("videoClip");
-var audioClips = document.getElementsByClassName("audioClip");
+var videoClips = document.getElementsByClassName("video");
+var audioClips = document.getElementsByClassName("audio");
 // var mediaClips = videoClips + audioClips;
 var readyStates = {};
 var i;
@@ -85,15 +85,15 @@ var loadingIconMaterial = new THREE.ShaderMaterial({
       vec3 color = vec3(0.0);
       vec2 st = v_uv;
 
-      if (u_state === 0) {
+      if (u_state == 0) {
         sharpness = u_mouse.y;
         width = u_mouse.x;
       }
-      if (u_state === 1) {
+      if (u_state == 1) {
         sharpness = u_mouse.y;
         center = u_mouse.x;
       }
-      if (u_state === 2) {
+      if (u_state == 2) {
         width = u_mouse.y;
         center = u_mouse.x;
       }
@@ -139,7 +139,7 @@ function makeBarMaterial(options) {
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
-        if (u_mouseOver === true) {
+        if (u_mouseOver == true) {
           // tex += vec3(0.2);
           tex *= vec3(1., 0., 1.);
         }

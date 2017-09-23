@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>FUTOR STATEZ!</title>
-    <!-- <script src="three.r85.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
+    <script src="js/three.r85.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script> -->
     <style>
       body {
         margin: 0px;
@@ -41,32 +41,32 @@
     </style>
   </head>
   <body>
-    <video class="videoClip" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
+    <video class="media video" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
       <source src="videos/performance.mp4" type='video/mp4;'>
     </video>
 
-    <video class="videoClip" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
+    <video class="media video" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
       <source src="videos/action-1.mp4" type='video/mp4;'>
     </video>
 
-    <audio class="audioClip" id="brodie" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
-      <source src="audio/compressed/brodieV9-0-320.mp3" type="audio/mpeg">
+    <audio class="media audio" id="brodie" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+      <source src="audio/compressed/w-silence/brodie.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="nick" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
-      <source src="audio/compressed/nickV9-0-320.mp3" type="audio/mpeg">
+    <audio class="media audio" id="nick" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+      <source src="audio/compressed/w-silence/nick.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="chuck" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
-      <source src="audio/compressed/chuckV9-0-320.mp3" type="audio/mpeg">
+    <audio class="media audio" id="chuck" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+      <source src="audio/compressed/w-silence/chuck.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="dan" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">
-      <source src="audio/compressed/danV9-0-320.mp3" type="audio/mpeg">
+    <audio class="media audio" id="dan" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">
+      <source src="audio/compressed/w-silence/dan.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="audioClip" id="dave" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
-      <source src="audio/compressed/daveV9-0-320.mp3" type="audio/mpeg">
+    <audio class="media audio" id="dave" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+      <source src="audio/compressed/w-silence/dave.mp3" type="audio/mpeg">
     </audio>
 
     <div id="container"></div>
@@ -77,6 +77,7 @@
 
     <div id="cc-button" onclick="toggleLyrics(event)"></div>
 
+    <script src="js/MediaManager.js"></script>
     <script src="js/script.js"></script>
   </body>
 </html>
