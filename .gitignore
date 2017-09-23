@@ -2,3 +2,4 @@ videos/original/*
 videos/test/*
 audio/wav/*
 *.mov
+audio/compressed/w-silence/*

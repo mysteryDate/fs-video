@@ -2,6 +2,7 @@
 
 // var AUDIO_DELAY = 3600; // ms between start of video and audio
 var AUDIO_DELAY = 0; // ms between start of video and audio
+var PAUSED = false;
 
 // THREE.js stuff
 var container;
@@ -161,6 +162,28 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
+function pause() {
+  var paused = audioClips[0].paused;
+  for (i = 0; i < audioClips.length; i++) {
+    if (!paused) {
+      PLAYING = false;
+      PAUSED = true;
+      audioClips[i].pause();
+    } else {
+      PLAYING = true;
+      PAUSED = false;
+      audioClips[i].play();
+    }
+  }
+  for (i = 0; i < videoClips.length; i++) {
+    if (!paused) {
+      videoClips[i].pause();
+    } else {
+      videoClips[i].play();
+    }
+  }
+}
+
 function init() {
   container = document.getElementById("container");
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -206,7 +229,6 @@ function init() {
   });
 }
 
-var PAUSED = false;
 function addPlayCounter(event) {
   readyStates[event.target.id] = true;
   console.log(event.target.id + ": " + event.type);
@@ -245,28 +267,6 @@ function sync(time) {
     readyStates[videoClips[i].id] = false;
     videoClips[i].pause();
     videoClips[i].currentTime = playHead;
-  }
-}
-
-function pause() {
-  var paused = audioClips[0].paused;
-  for (i = 0; i < audioClips.length; i++) {
-    if (!paused) {
-      PLAYING = false;
-      PAUSED = true;
-      audioClips[i].pause();
-    } else {
-      PLAYING = true;
-      PAUSED = false;
-      audioClips[i].play();
-    }
-  }
-  for (i = 0; i < videoClips.length; i++) {
-    if (!paused) {
-      videoClips[i].pause();
-    } else {
-      videoClips[i].play();
-    }
   }
 }
 

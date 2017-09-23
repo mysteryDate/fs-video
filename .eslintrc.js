@@ -10,8 +10,8 @@ module.exports = {
   extends: [
     "./eslint-rules/airbnb/best-practices.js",
     "./eslint-rules/airbnb/errors.js",
-    // "./eslint-rules/airbnb/style.js",
     "./eslint-rules/airbnb/variables.js",
+    // "./eslint-rules/airbnb/style.js",
   ],
   parserOptions: {
     ecmaVersion: 6,
@@ -21,7 +21,7 @@ module.exports = {
   rules: {
     "wrap-iife": ["error", "inside"], // iife style following optimize-js style
     "vars-on-top": "off", // don't require var declarations at top of scope
-    "no-unused-vars": ["error", {args: "none"}], // allow not using arguments to a function, like Go
+    // "no-unused-vars": ["error", {args: "none"}], // allow not using arguments to a function, like Go
     "no-param-reassign": "off", // allow reassigning passed in arguments
     "no-restricted-properties": "off", // allow Math.pow because ** is fully supported
     "quotes": ["error", "double", {avoidEscape: true}], // require double quotes except when it avoids the need to escape
