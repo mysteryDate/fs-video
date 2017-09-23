@@ -1,6 +1,7 @@
 "use strict";
 
-var AUDIO_DELAY = 3600; // ms between start of video and audio
+// var AUDIO_DELAY = 3600; // ms between start of video and audio
+var AUDIO_DELAY = 0; // ms between start of video and audio
 
 // THREE.js stuff
 var container;
@@ -205,7 +206,7 @@ function addPlayCounter(event) {
       // var isPlaying = videoClips[i].currentTime > 0 && !videoClips[i].paused && !videoClips[i].ended && videoClips[i].readyState > 2;
       // if (!isPlaying) {
       // }
-      videoClips[i].play();
+      videoClips[i].play(); lksdfj
       videoClips[i].volume = 0;
     }
     setTimeout(function() {

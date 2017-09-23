@@ -12,3 +12,5 @@
 2017-09-11: 3 hours (lyrics)
 Total: 27
 2017-09-19: 2 hours -> lyrics formatting
+2017-09-20: 3 hour -> lag hacking, audio compression
+2017-09-23:
