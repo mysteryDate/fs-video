@@ -5,13 +5,15 @@ module.exports = {
   },
   globals: {
     "THREE": false, // not allowed to overwrite this
+    "MediaManager": false, // not allowed to overwrite this
+    "Materials": false, // not allowed to overwrite this
     "nativePostMessage": true, // allow overwriting
   },
   extends: [
     "./eslint-rules/airbnb/best-practices.js",
     "./eslint-rules/airbnb/errors.js",
     "./eslint-rules/airbnb/variables.js",
-    // "./eslint-rules/airbnb/style.js",
+    "./eslint-rules/airbnb/style.js",
   ],
   parserOptions: {
     ecmaVersion: 6,
