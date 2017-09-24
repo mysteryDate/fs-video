@@ -22,9 +22,30 @@ var Clip = function(element) {
 var MediaManager = (function(clipElements) {
   var clips = [];
   var state = "not started";
+  var AUDIO_DELAY = 3.600;
 
   for (var i = 0; i < clipElements.length; i++) {
     clips.push(new Clip(clipElements[i]));
+  }
+
+  function getVideoClips() {
+    var result = [];
+    clips.forEach(function(c) {
+      if (c.type === "video") {
+        result.push(c);
+      }
+    });
+    return result;
+  }
+
+  function getAudioClips() {
+    var result = [];
+    clips.forEach(function(c) {
+      if (c.type === "audio") {
+        result.push(c);
+      }
+    });
+    return result;
   }
 
   function canPlay() {
@@ -37,9 +58,27 @@ var MediaManager = (function(clipElements) {
     return result;
   }
 
-  function start() {
+  function startVideo() {
     if (canPlay() && state === "not started") {
-      clips.forEach(function(c) {
+      var vc = getVideoClips();
+      vc.forEach(function(c) {
+        if (c.started) {
+          console.warn("You're asking clip " + c.name + " to start though it already has");
+        }
+        c.start();
+      });
+      state = "video playing";
+    } else if (state !== "not started") {
+      console.warn("Can't start, already started. State: " + state);
+    } else {
+      console.warn("Can't start, not ready");
+    }
+  }
+
+  function startAudio() {
+    if (canPlay() && state === "video playing") {
+      var ac = getAudioClips();
+      ac.forEach(function(c) {
         if (c.started) {
           console.warn("You're asking clip " + c.name + " to start though it already has");
         }
@@ -54,7 +93,7 @@ var MediaManager = (function(clipElements) {
   }
 
   function pause() {
-    if (state === "playing") {
+    if (state === "playing" || state === "video playing") {
       clips.forEach(function(c) {
         var changeState = true;
         if (c.started && c.playing) {
@@ -79,11 +118,17 @@ var MediaManager = (function(clipElements) {
         if (c.started && !c.playing) {
           c.start();
         } else {
-          changeState = false;
+          if (c.playing) {
+            changeState = false;
+          }
           console.warn(c.name + " cannot be unpaused. Playing: " + c.playing + " Started: " + c.started);
         }
         if (changeState) {
-          state = "playing";
+          if (getCurrentVideoTime() >= AUDIO_DELAY) {
+            state = "playing";
+          } else {
+            state = "video playing";
+          }
         }
       });
     } else {
@@ -115,29 +160,9 @@ var MediaManager = (function(clipElements) {
     var c = getClip(name);
     c.canPlay = false;
 
-    if (state === "playing") {
+    if (state === "playing" || state === "video playing") {
       pause();
     }
-  }
-
-  function getVideoClips() {
-    var result = [];
-    clips.forEach(function(c) {
-      if (c.type === "video") {
-        result.push(c);
-      }
-    });
-    return result;
-  }
-
-  function getAudioClips() {
-    var result = [];
-    clips.forEach(function(c) {
-      if (c.type === "audio") {
-        result.push(c);
-      }
-    });
-    return result;
   }
 
   function getCurrentVideoTime() {
@@ -159,9 +184,11 @@ var MediaManager = (function(clipElements) {
 
   function update() {
     if (state === "not started" && canPlay()) {
-      start();
+      startVideo();
     } else if (state === "paused" && canPlay()) {
       unpause();
+    } else if (state === "video playing" && getCurrentVideoTime() >= AUDIO_DELAY) {
+      startAudio();
     }
   }
 

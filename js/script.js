@@ -127,14 +127,13 @@ function setLyrics() {
 
 function update() {
   MM.update();
-  if (MM.getState() === "playing") {
+  if (MM.getState() === "not started") {
+    LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
+  } else {
     var videoT = MM.getCurrentVideoTime();
     for (i = 0; i < barMaterials.length; i++) {
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
     }
-  }
-  else {
-    LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
   }
 
   requestAnimationFrame(update);
