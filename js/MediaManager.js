@@ -5,6 +5,7 @@ var Clip = function(element) {
   this.canPlay = false;
   this.playing = false;
   this.started = false;
+  this.type = element.classList[1];
 
   function start() {
     this.element.play();
@@ -90,10 +91,58 @@ var MediaManager = (function(clipElements) {
     }
   }
 
+  function getClip(name) {
+    var result;
+    clips.forEach(function(c) {
+      if (c.name === name) {
+        result = c;
+      }
+    });
+    if (result === undefined) {
+      console.warn("No clip named " + name + " exists");
+    }
+    return result;
+  }
+
+  function readyClip(event) {
+    var name = event.target.id;
+    var c = getClip(name);
+    c.canPlay = true;
+  }
+
+  function isWaiting(event) {
+    var name = event.target.id;
+    var c = getClip(name);
+    c.canPlay = false;
+  }
+
+  function getVideoClips() {
+    var result = [];
+    clips.forEach(function(c) {
+      if (c.type === "video") {
+        result.push(c);
+      }
+    });
+    return result;
+  }
+
+  function getAudioClips() {
+    var result = [];
+    clips.forEach(function(c) {
+      if (c.type === "audio") {
+        result.push(c);
+      }
+    });
+    return result;
+  }
+
   return {
     clips: clips,
     start: start,
     pause: pause,
     unpause: unpause,
+    getClip: getClip,
+    readyClip: readyClip,
+    isWaiting: isWaiting,
   }
 });

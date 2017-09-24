@@ -41,31 +41,31 @@
     </style>
   </head>
   <body>
-    <video class="media video" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="base-video" style="display:none">
+    <video class="media video" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)" id="base-video" style="display:none">
       <source src="videos/performance.mp4" type='video/mp4;'>
     </video>
 
-    <video class="media video" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)" id="second-video" style="display:none">
+    <video class="media video" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)" id="second-video" style="display:none">
       <source src="videos/action-1.mp4" type='video/mp4;'>
     </video>
 
-    <audio class="media audio" id="brodie" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="media audio" id="brodie" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)">>
       <source src="audio/compressed/w-silence/brodie.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="media audio" id="nick" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="media audio" id="nick" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)">>
       <source src="audio/compressed/w-silence/nick.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="media audio" id="chuck" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="media audio" id="chuck" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)">>
       <source src="audio/compressed/w-silence/chuck.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="media audio" id="dan" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">
+    <audio class="media audio" id="dan" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)">
       <source src="audio/compressed/w-silence/dan.mp3" type="audio/mpeg">
     </audio>
 
-    <audio class="media audio" id="dave" onwaiting="waiting(event)" oncanplay="addPlayCounter(event)">>
+    <audio class="media audio" id="dave" onwaiting="mediaManager.isWaiting(event)" oncanplay="mediaManager.readyClip(event)">>
       <source src="audio/compressed/w-silence/dave.mp3" type="audio/mpeg">
     </audio>
 

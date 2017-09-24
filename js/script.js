@@ -14,18 +14,7 @@ var scene;
 var videoTextures = [];
 var barMaterials = [];
 
-// Our media
-var videoClips = document.getElementsByClassName("video");
-var audioClips = document.getElementsByClassName("audio");
-// var mediaClips = videoClips + audioClips;
-var readyStates = {};
 var i;
-for (i = 0; i < audioClips.length; i++) {
-  readyStates[audioClips[i].id] = false;
-}
-for (i = 0; i < videoClips.length; i++) {
-  readyStates[videoClips[i].id] = false;
-}
 var lyricsTextField = document.getElementById("lyricsText");
 var lyricsJSON;
 var lyricsIndex = 0;
@@ -40,6 +29,8 @@ var LYRICS_ON = false;
 var playHead = 0;
 var size;
 var mousePosition = new THREE.Vector2();
+
+var mediaManager = new MediaManager(document.getElementsByClassName("media"));
 
 function timeStringToInt(time) {
   var minutes = parseInt(time.split(":")[0], 10);
@@ -60,28 +51,6 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
-function pause() {
-  var paused = audioClips[0].paused;
-  for (i = 0; i < audioClips.length; i++) {
-    if (!paused) {
-      PLAYING = false;
-      PAUSED = true;
-      audioClips[i].pause();
-    } else {
-      PLAYING = true;
-      PAUSED = false;
-      audioClips[i].play();
-    }
-  }
-  for (i = 0; i < videoClips.length; i++) {
-    if (!paused) {
-      videoClips[i].pause();
-    } else {
-      videoClips[i].play();
-    }
-  }
-}
-
 function init() {
   container = document.getElementById("container");
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -89,12 +58,13 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
-  for (i = 0; i < videoClips.length; i++) {
-    var vt = new THREE.VideoTexture(videoClips[i]);
+  var videoClips = mediaManager.getVideoClips();
+  videoClips.forEach(function(vc) {
+    var vt = new THREE.VideoTexture(vc);
     vt.minFilter = vt.magFilter = THREE.NearestFilter;
     vt.format = THREE.RGBFormat;
     videoTextures.push(vt);
-  }
+  });
 
   camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100);
   camera.position.set(0.5, 0.5, 50);
@@ -127,60 +97,6 @@ function init() {
   });
 }
 
-function addPlayCounter(event) {
-  readyStates[event.target.id] = true;
-  console.log(event.target.id + ": " + event.type);
-  console.log(readyStates);
-
-  var readyToPlay = (Object.values(readyStates).indexOf(false) === -1);
-  if (readyToPlay && !PAUSED) {
-    PLAYING = true;
-    videoStartTime = performance.now();
-    for (i = 0; i < videoClips.length; i++) {
-      // isPlaying = videoClips[i].currentTime > 0 && !videoClips[i].paused && !videoClips[i].ended && videoClips[i].readyState > 2;
-      // if (!isPlaying) {
-      // }
-      videoClips[i].play();
-      videoClips[i].volume = 0;
-    }
-    setTimeout(function() {
-      for (i = 0; i < audioClips.length; i++) {
-        audioClips[i].play();
-      }
-    }, AUDIO_DELAY);
-  } else if (readyToPlay && PAUSED) {
-    pause();
-  }
-}
-
-// This doesn't acutally work
-function sync(time) {
-  playHead = (time !== undefined) ? time : audioClips[0].currentTime;
-  for (i = 0; i < audioClips.length; i++) {
-    readyStates[audioClips[i].id] = false;
-    audioClips[i].pause();
-    audioClips[i].currentTime = playHead;
-  }
-  for (i = 0; i < videoClips.length; i++) {
-    readyStates[videoClips[i].id] = false;
-    videoClips[i].pause();
-    videoClips[i].currentTime = playHead;
-  }
-}
-
-function printCurrentTimes() {
-  for (i = 0; i < audioClips.length; i++) {
-    console.log(audioClips[i].currentTime);
-  }
-  for (i = 0; i < videoClips.length; i++) {
-    console.log(videoClips[i].currentTime);
-  }
-}
-
-function render() {
-  renderer.render(scene, camera);
-}
-
 function setLyrics() {
   if (lyricsJSON !== undefined) {
     var t = audioClips[0].currentTime;
@@ -208,7 +124,7 @@ function setLyrics() {
 }
 
 function update() {
-  if (PLAYING) {
+  if (mediaManager.state === "playing") {
     var videoT = performance.now() - videoStartTime;
     for (i = 0; i < barMaterials.length; i++) {
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
@@ -218,9 +134,8 @@ function update() {
     LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
   }
   requestAnimationFrame(update);
-  render();
+  renderer.render(scene, camera);
   setLyrics();
-
 }
 
 function onDocumentClick(event) {
@@ -231,12 +146,12 @@ function onDocumentClick(event) {
   mousePosition.y = 1 - event.clientY / size.height;
   var hoverOver = Math.floor(mousePosition.x * audioClips.length);
 
-  if (audioClips[hoverOver].volume === 1) {
-    audioClips[hoverOver].volume = 0;
-  } else {
-    audioClips[hoverOver].volume = 1;
-  }
-
+  // if (audioClips[hoverOver].volume === 1) {
+  //   audioClips[hoverOver].volume = 0;
+  // } else {
+  //   audioClips[hoverOver].volume = 1;
+  // }
+  //
   barMaterials[hoverOver].uniforms.u_playing.value = !barMaterials[hoverOver].uniforms.u_playing.value;
   if (barMaterials[hoverOver].uniforms.u_playing.value === true) {
     barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[0];
@@ -273,20 +188,10 @@ function onDocumentMouseMove(event) {
   }
 }
 
-function waiting(event) {
-  if (PLAYING) {
-    pause();
-  }
-  readyStates[event.target.id] = false;
-  console.log(event.target.id + ": " + event.type);
-  console.log(readyStates);
-}
-
 function toggleLyrics(event) {
   event.stopPropagation();
   LYRICS_ON = !LYRICS_ON;
 }
-
 
 document.addEventListener("click", onDocumentClick, false);
 document.addEventListener("mousemove", onDocumentMouseMove, false);
