@@ -45,9 +45,20 @@
       <source src="videos/performance.mp4" type='video/mp4;'>
     </video>
 
-    <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
-      <source src="videos/action-1.mp4" type='video/mp4;'>
+    <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
+      <source src="" type='video/mp4;' id="actionVideoSrc">
     </video>
+    <script type="text/javascript">
+      (function() {
+        var NUM_ACTION_CLIPS = 6;
+        var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
+        var file = "videos/action-" + index + ".mp4";
+        var avSource = document.getElementById("actionVideoSrc");
+        avSource.src = file;
+        console.log(file);
+      })();
+    </script>
+
 
     <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">>
       <source src="audio/compressed/brodie.mp3" type="audio/mpeg">

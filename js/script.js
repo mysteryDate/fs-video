@@ -141,6 +141,11 @@ function update() {
   setLyrics();
 }
 
+function toggleLyrics(event) {
+  event.stopPropagation();
+  LYRICS_ON = !LYRICS_ON;
+}
+
 function onDocumentClick(event) {
   event.preventDefault();
 
@@ -190,11 +195,6 @@ function onDocumentMouseMove(event) {
     LOADING_SCREEN.material.uniforms.u_mouse.value.x = mousePosition.x;
     LOADING_SCREEN.material.uniforms.u_mouse.value.y = mousePosition.y;
   }
-}
-
-function toggleLyrics(event) {
-  event.stopPropagation();
-  LYRICS_ON = !LYRICS_ON;
 }
 
 document.addEventListener("click", onDocumentClick, false);

@@ -38,6 +38,14 @@ var MediaManager = (function(clipElements) {
     return result;
   }
 
+  function printReadyStates() {
+    var result = {};
+    clips.forEach(function(c) {
+      result[c.name] = c.canPlay;
+    });
+    console.log(result);
+  }
+
   function getAudioClips() {
     var result = [];
     clips.forEach(function(c) {
@@ -151,6 +159,8 @@ var MediaManager = (function(clipElements) {
 
   function readyClip(event) {
     var name = event.target.id;
+    console.log(name + " is ready");
+    printReadyStates();
     var c = getClip(name);
     c.canPlay = true;
   }
@@ -159,6 +169,8 @@ var MediaManager = (function(clipElements) {
     var name = event.target.id;
     var c = getClip(name);
     c.canPlay = false;
+    console.log(name + " is waiting");
+    printReadyStates();
 
     if (state === "playing" || state === "video playing") {
       pause();
