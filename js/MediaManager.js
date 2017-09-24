@@ -170,19 +170,15 @@ var MediaManager = (function(clipElements) {
   }
 
   return {
-    clips: clips,
-    start: start,
-    pause: pause,
-    unpause: unpause,
-    getClip: getClip,
     readyClip: readyClip,
     isWaiting: isWaiting,
     getVideoClips: getVideoClips,
     getAudioClips: getAudioClips,
-    getCurrentVideoTime: getCurrentVideoTime,
     getCurrentAudioTime: getCurrentAudioTime,
-    update: update,
-    setVolume: setVolume,
+    getCurrentVideoTime: getCurrentVideoTime,
     getState: getState,
+    update: update,
+    clips: clips,
+    setVolume: setVolume,
   }
 });
