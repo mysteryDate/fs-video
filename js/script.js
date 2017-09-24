@@ -41,7 +41,7 @@ function timeStringToInt(time) {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open('GET', 'lyrics_block.json', true);
+  xobj.open('GET', 'js/lyrics_block.json', true);
   xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === "200") {
       // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -60,7 +60,7 @@ function init() {
 
   var videoClips = mediaManager.getVideoClips();
   videoClips.forEach(function(vc) {
-    var vt = new THREE.VideoTexture(vc);
+    var vt = new THREE.VideoTexture(vc.element);
     vt.minFilter = vt.magFilter = THREE.NearestFilter;
     vt.format = THREE.RGBFormat;
     videoTextures.push(vt);
@@ -72,7 +72,8 @@ function init() {
 
   size = renderer.getSize();
   var dpr = renderer.getPixelRatio();
-  for (i = 0; i < audioClips.length; i++) {
+  var audioClips = mediaManager.getAudioClips();
+  audioClips.forEach(function(ac) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
     var mat = Materials.bar({
       video: videoTextures[0],
@@ -84,7 +85,7 @@ function init() {
     mesh.position.y = 0.5;
     scene.add(mesh);
     barMaterials.push(mat);
-  }
+  });
 
   var loadingScreenSize = 0.8;
   LOADING_SCREEN = new THREE.Mesh(new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize), Materials.loadingIcon());
@@ -99,7 +100,7 @@ function init() {
 
 function setLyrics() {
   if (lyricsJSON !== undefined) {
-    var t = audioClips[0].currentTime;
+    var t = mediaManager.getCurrentAudioTime();
     var currentLyric = lyricsJSON[lyricsIndex];
     var nextLyric = lyricsJSON[lyricsIndex + 1];
     var nextStart = (nextLyric !== undefined) ? timeStringToInt(nextLyric.startTime) : Infinity;
@@ -120,6 +121,8 @@ function setLyrics() {
     } else {
       lyricsTextField.style.display = "inline-block";
     }
+  } else {
+    lyricsTextField.style.display = "none";
   }
 }
 
@@ -144,7 +147,7 @@ function onDocumentClick(event) {
   size = renderer.getSize();
   mousePosition.x = event.clientX / size.width;
   mousePosition.y = 1 - event.clientY / size.height;
-  var hoverOver = Math.floor(mousePosition.x * audioClips.length);
+  // var hoverOver = Math.floor(mousePosition.x * audioClips.length);
 
   // if (audioClips[hoverOver].volume === 1) {
   //   audioClips[hoverOver].volume = 0;
@@ -152,12 +155,12 @@ function onDocumentClick(event) {
   //   audioClips[hoverOver].volume = 1;
   // }
   //
-  barMaterials[hoverOver].uniforms.u_playing.value = !barMaterials[hoverOver].uniforms.u_playing.value;
-  if (barMaterials[hoverOver].uniforms.u_playing.value === true) {
-    barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[0];
-  } else {
-    barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
-  }
+  // barMaterials[hoverOver].uniforms.u_playing.value = !barMaterials[hoverOver].uniforms.u_playing.value;
+  // if (barMaterials[hoverOver].uniforms.u_playing.value === true) {
+  //   barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[0];
+  // } else {
+  //   barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
+  // }
 
   if (!PLAYING) {
     var state = LOADING_SCREEN.material.uniforms.u_state.value;
@@ -173,14 +176,14 @@ function onDocumentMouseMove(event) {
   mousePosition.x = event.clientX / size.width;
   mousePosition.y = 1 - event.clientY / size.height;
 
-  var hoverOver = Math.floor(mousePosition.x * audioClips.length);
-
-  for (i = 0; i < barMaterials.length; i++) {
-    barMaterials[i].uniforms.u_mouseOver.value = false;
-    if (i === hoverOver) {
-      barMaterials[i].uniforms.u_mouseOver.value = true;
-    }
-  }
+  // var hoverOver = Math.floor(mousePosition.x * audioClips.length);
+  //
+  // for (i = 0; i < barMaterials.length; i++) {
+  //   barMaterials[i].uniforms.u_mouseOver.value = false;
+  //   if (i === hoverOver) {
+  //     barMaterials[i].uniforms.u_mouseOver.value = true;
+  //   }
+  // }
 
   if (!PLAYING) {
     LOADING_SCREEN.material.uniforms.u_mouse.value.x = mousePosition.x;

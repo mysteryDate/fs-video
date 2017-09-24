@@ -136,6 +136,16 @@ var MediaManager = (function(clipElements) {
     return result;
   }
 
+  function getCurrentVideoTime() {
+    var vc = getVideoClips();
+    return vc[0].currentTime;
+  }
+
+  function getCurrentAudioTime() {
+    var ac = getAudioClips();
+    return ac[0].currentTime;
+  }
+
   return {
     clips: clips,
     start: start,
@@ -144,5 +154,9 @@ var MediaManager = (function(clipElements) {
     getClip: getClip,
     readyClip: readyClip,
     isWaiting: isWaiting,
+    getVideoClips: getVideoClips,
+    getAudioClips: getAudioClips,
+    getCurrentVideoTime: getCurrentVideoTime,
+    getCurrentAudioTime: getCurrentAudioTime,
   }
 });
