@@ -41,112 +41,10 @@ var playHead = 0;
 var size;
 var mousePosition = new THREE.Vector2();
 
-var loadingIconMaterial = new THREE.ShaderMaterial({
-  name: "loading",
-  uniforms: {
-    u_mouse: {value: new THREE.Vector2(0, 0)},
-    u_time: {value: 0},
-    u_state: {value: 0},
-  },
-  vertexShader: `
-    varying vec2 v_uv;
-    void main() {
-      v_uv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-    varying vec2 v_uv;
-    uniform vec2 u_mouse;
-    uniform float u_time;
-    uniform int u_state;
-    float pulse(float center, float width, float sharpness, float x) {
-      float left = center - width / 2.0;
-      float right = center + width / 2.0;
-      float leftEdge = smoothstep(left - sharpness, left + sharpness, x);
-      float rightEdge = smoothstep(right + sharpness, right - sharpness, x);
-      return leftEdge * rightEdge;
-    }
-
-    float rectSDF(vec2 st, vec2 s) {
-      st = st * 2.0 - 1.0;
-      return max(abs(st.x/s.x), abs(st.y/s.y));
-    }
-
-    float crossSDF(vec2 st, float s) {
-      vec2 size = vec2(0.25, s);
-      return min(rectSDF(st, size.xy), rectSDF(st, size.yx));
-    }
-
-    float sharpness = 0.2;
-    float width = 0.2;
-    float center = 0.5;
-    void main() {
-      vec3 color = vec3(0.0);
-      vec2 st = v_uv;
-
-      if (u_state == 0) {
-        sharpness = u_mouse.y;
-        width = u_mouse.x;
-      }
-      if (u_state == 1) {
-        sharpness = u_mouse.y;
-        center = u_mouse.x;
-      }
-      if (u_state == 2) {
-        width = u_mouse.y;
-        center = u_mouse.x;
-      }
-
-      float cross = crossSDF(st, 0.6 + 0.5 * sin(u_time / 4.0));
-      color.r += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
-      cross = crossSDF(st, 0.6 + 0.2 * sin(u_time / 2.0));
-      color.g += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
-      cross = crossSDF(st, 0.6 + 0.1 * sin(u_time / 1.0));
-      color.b += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
-      color *= sharpness/2.0 + 1.0;
-
-      gl_FragColor = vec4(color, 1.0);
-    }
-  `,
-});
-
 function timeStringToInt(time) {
   var minutes = parseInt(time.split(":")[0], 10);
   var seconds = parseInt(time.split(":")[1], 10);
   return minutes * 60 + seconds;
-}
-
-function makeBarMaterial(options) {
-  return new THREE.ShaderMaterial({
-    transparent: true,
-    uniforms: {
-      u_playing: {value: true},
-      u_mouseOver: {value: false},
-      u_videoTexture: {value: options.video},
-      u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
-      u_opacity: {value: 0},
-    },
-    vertexShader: `
-      void main() {
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }`,
-    fragmentShader: `
-      uniform sampler2D u_videoTexture;
-      uniform vec2 u_resolution;
-      uniform float u_opacity;
-      uniform bool u_mouseOver;
-      void main() {
-        vec2 uv = gl_FragCoord.xy / u_resolution;
-        vec3 tex = texture2D(u_videoTexture, uv).rgb;
-        if (u_mouseOver == true) {
-          // tex += vec3(0.2);
-          tex *= vec3(1., 0., 1.);
-        }
-        gl_FragColor = vec4(tex, u_opacity);
-      }
-    `
-  });
 }
 
 function loadJSON(callback) {
@@ -206,7 +104,7 @@ function init() {
   var dpr = renderer.getPixelRatio();
   for (i = 0; i < audioClips.length; i++) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
-    var mat = makeBarMaterial({
+    var mat = Materials.bar({
       video: videoTextures[0],
       resolution: new THREE.Vector2(size.width * dpr, size.height * dpr),
     });
@@ -219,7 +117,7 @@ function init() {
   }
 
   var loadingScreenSize = 0.8;
-  LOADING_SCREEN = new THREE.Mesh(new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize), loadingIconMaterial);
+  LOADING_SCREEN = new THREE.Mesh(new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize), Materials.loadingIcon());
   LOADING_SCREEN.position.set(0.5, 0.5, 0);
   scene.add(LOADING_SCREEN);
 
