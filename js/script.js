@@ -22,7 +22,7 @@ var lyricsIndex = 0;
 var LOADING_SCREEN;
 var videoStartTime;
 var PLAYING = false;
-var FADE_IN_TIME = 3000;
+var FADE_IN_TIME = 3;
 var LYRICS_ON = false;
 
 // Counters and UI
@@ -30,7 +30,7 @@ var playHead = 0;
 var size;
 var mousePosition = new THREE.Vector2();
 
-var mediaManager = new MediaManager(document.getElementsByClassName("media"));
+var MEDIA_MANAGER = new MediaManager(document.getElementsByClassName("media"));
 
 function timeStringToInt(time) {
   var minutes = parseInt(time.split(":")[0], 10);
@@ -43,7 +43,6 @@ function loadJSON(callback) {
   xobj.overrideMimeType("application/json");
   xobj.open('GET', 'lyrics_block.json', true);
   xobj.onreadystatechange = function () {
-    console.log(xobj.readyState, xobj.status);
     if (xobj.readyState === 4 && xobj.status === 200) {
       // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
       callback(xobj.responseText);
@@ -59,7 +58,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
-  var videoClips = mediaManager.getVideoClips();
+  var videoClips = MEDIA_MANAGER.getVideoClips();
   videoClips.forEach(function(vc) {
     var vt = new THREE.VideoTexture(vc.element);
     vt.minFilter = vt.magFilter = THREE.NearestFilter;
@@ -73,15 +72,15 @@ function init() {
 
   size = renderer.getSize();
   var dpr = renderer.getPixelRatio();
-  var audioClips = mediaManager.getAudioClips();
-  audioClips.forEach(function(ac) {
+  var audioClips = MEDIA_MANAGER.getAudioClips();
+  audioClips.forEach(function(ac, index) {
     var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
     var mat = Materials.bar({
       video: videoTextures[0],
       resolution: new THREE.Vector2(size.width * dpr, size.height * dpr),
     });
     var mesh = new THREE.Mesh(geo, mat);
-    mesh.position.x = THREE.Math.mapLinear(i, 0, audioClips.length, 0, 1);
+    mesh.position.x = THREE.Math.mapLinear(index, 0, audioClips.length, 0, 1);
     mesh.position.x += 0.5/audioClips.length;
     mesh.position.y = 0.5;
     scene.add(mesh);
@@ -101,7 +100,7 @@ function init() {
 
 function setLyrics() {
   if (lyricsJSON !== undefined) {
-    var t = mediaManager.getCurrentAudioTime();
+    var t = MEDIA_MANAGER.getCurrentAudioTime();
     var currentLyric = lyricsJSON[lyricsIndex];
     var nextLyric = lyricsJSON[lyricsIndex + 1];
     var nextStart = (nextLyric !== undefined) ? timeStringToInt(nextLyric.startTime) : Infinity;
@@ -128,8 +127,10 @@ function setLyrics() {
 }
 
 function update() {
-  if (mediaManager.state === "playing") {
-    var videoT = performance.now() - videoStartTime;
+  var previousState = MEDIA_MANAGER.getState();
+  MEDIA_MANAGER.update();
+  if (MEDIA_MANAGER.getState() === "playing") {
+    var videoT = MEDIA_MANAGER.getCurrentVideoTime();
     for (i = 0; i < barMaterials.length; i++) {
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
     }
@@ -137,6 +138,7 @@ function update() {
   else {
     LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
   }
+
   requestAnimationFrame(update);
   renderer.render(scene, camera);
   setLyrics();

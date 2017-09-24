@@ -7,13 +7,13 @@ var Clip = function(element) {
   this.started = false;
   this.type = element.classList[1];
 
-  function start() {
+   this.start = function() {
     this.element.play();
     this.playing = true;
     this.started = true;
   }
 
-  function pause() {
+   this.pause = function() {
     this.element.pause();
     this.playing = false;
   }
@@ -44,8 +44,8 @@ var MediaManager = (function(clipElements) {
           console.warn("You're asking clip " + c.name + " to start though it already has");
         }
         c.start();
-        state = "playing";
       });
+      state = "playing";
     } else if (state !== "not started") {
       console.warn("Can't start, already started. State: " + state);
     } else {
@@ -77,7 +77,7 @@ var MediaManager = (function(clipElements) {
       clips.forEach(function(c) {
         var changeState = true;
         if (c.started && !c.playing) {
-          c.play();
+          c.start();
         } else {
           changeState = false;
           console.warn(c.name + " cannot be unpaused. Playing: " + c.playing + " Started: " + c.started);
@@ -114,6 +114,10 @@ var MediaManager = (function(clipElements) {
     var name = event.target.id;
     var c = getClip(name);
     c.canPlay = false;
+
+    if (state === "playing") {
+      pause();
+    }
   }
 
   function getVideoClips() {
@@ -138,12 +142,31 @@ var MediaManager = (function(clipElements) {
 
   function getCurrentVideoTime() {
     var vc = getVideoClips();
-    return vc[0].currentTime;
+    return vc[0].element.currentTime;
   }
 
   function getCurrentAudioTime() {
     var ac = getAudioClips();
-    return ac[0].currentTime;
+    return ac[0].element.currentTime;
+  }
+
+  function setVolume(volume) {
+    var ac = getAudioClips();
+    ac.forEach(function(c) {
+      c.element.volume = volume;
+    });
+  }
+
+  function update() {
+    if (state === "not started" && canPlay()) {
+      start();
+    } else if (state === "paused" && canPlay()) {
+      unpause();
+    }
+  }
+
+  function getState() {
+    return state;
   }
 
   return {
@@ -158,5 +181,8 @@ var MediaManager = (function(clipElements) {
     getAudioClips: getAudioClips,
     getCurrentVideoTime: getCurrentVideoTime,
     getCurrentAudioTime: getCurrentAudioTime,
+    update: update,
+    setVolume: setVolume,
+    getState: getState,
   }
 });
