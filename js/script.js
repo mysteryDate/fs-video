@@ -12,6 +12,7 @@ var scene;
 // Materials and textures
 var videoTextures = [];
 var barMaterials = [];
+var barMeshes = [];
 
 var i;
 var lyricsTextField = document.getElementById("lyricsText");
@@ -21,6 +22,7 @@ var lyricsIndex = 0;
 var LOADING_SCREEN;
 var FADE_IN_TIME = 3;
 var LYRICS_ON = false;
+var ASPECT_RATIO = 1920/1080;
 
 // Counters and UI
 var size;
@@ -48,6 +50,19 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
+function sizeBars() {
+  var width = Math.min(size.width, size.height * ASPECT_RATIO);
+  var height = Math.min(size.height, size.width / ASPECT_RATIO);
+
+  var percentageWidth = width / size.width;
+  var percentageHeight = height / size.height;
+
+  barMeshes.forEach(function(mesh) {
+    mesh.scale.x = percentageWidth;
+    mesh.scale.y = percentageHeight;
+  });
+}
+
 function init() {
   container = document.getElementById("container");
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -66,6 +81,7 @@ function init() {
   camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100);
   camera.position.set(0.5, 0.5, 50);
   scene = new THREE.Scene();
+  scene.background = new THREE.Color("black");
 
   size = renderer.getSize();
   var dpr = renderer.getPixelRatio();
@@ -74,13 +90,14 @@ function init() {
     var geo = new THREE.PlaneGeometry(1/numAudioClips, 1);
     var mat = Materials.bar({
       video: videoTextures[0],
-      resolution: new THREE.Vector2(size.width * dpr, size.height * dpr),
+      index: i,
     });
     var mesh = new THREE.Mesh(geo, mat);
     mesh.position.x = THREE.Math.mapLinear(i, 0, numAudioClips, 0, 1);
     mesh.position.x += 0.5/numAudioClips;
     mesh.position.y = 0.5;
     scene.add(mesh);
+    barMeshes.push(mesh);
     barMaterials.push(mat);
   }
 

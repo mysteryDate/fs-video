@@ -87,22 +87,29 @@ Materials.bar = function(options) {
       u_playing: {value: true},
       u_mouseOver: {value: false},
       u_videoTexture: {value: options.video},
-      u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
       u_opacity: {value: 0},
       u_color: {value: colors[options.index]},
+      u_index: {value: options.index},
     },
     vertexShader: `
+      varying vec2 v_uv;
       void main() {
+        v_uv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }`,
     fragmentShader: `
+      varying vec2 v_uv;
       uniform sampler2D u_videoTexture;
       uniform vec3 u_color;
-      uniform vec2 u_resolution;
       uniform float u_opacity;
+      uniform float u_index;
       uniform bool u_mouseOver;
+
+      const float NUM_BARS = 5.0;
+
       void main() {
-        vec2 uv = gl_FragCoord.xy / u_resolution;
+        vec2 uv = v_uv;
+        uv.x = (uv.x + u_index) / NUM_BARS;
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
         if (u_mouseOver == true) {
           tex *= u_color;
