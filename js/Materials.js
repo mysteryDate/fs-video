@@ -79,7 +79,7 @@ Materials.bar = function(options) {
     new THREE.Color(0x00ff00),
     new THREE.Color(0xff00ff),
     new THREE.Color(0xff0000),
-    new THREE.Color(0x0000ff),
+    new THREE.Color(0x00ffff),
   ];
   return new THREE.ShaderMaterial({
     transparent: true,
