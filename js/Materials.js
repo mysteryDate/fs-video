@@ -74,6 +74,13 @@ Materials.loadingIcon = function() {
 };
 
 Materials.bar = function(options) {
+  var colors = [
+    new THREE.Color(0xffff00),
+    new THREE.Color(0x00ff00),
+    new THREE.Color(0xff00ff),
+    new THREE.Color(0xff0000),
+    new THREE.Color(0x0000ff),
+  ];
   return new THREE.ShaderMaterial({
     transparent: true,
     uniforms: {
@@ -82,6 +89,7 @@ Materials.bar = function(options) {
       u_videoTexture: {value: options.video},
       u_resolution: {value: options.resolution || new THREE.Vector2(1, 1)},
       u_opacity: {value: 0},
+      u_color: {value: colors[options.index]},
     },
     vertexShader: `
       void main() {
@@ -89,6 +97,7 @@ Materials.bar = function(options) {
     }`,
     fragmentShader: `
       uniform sampler2D u_videoTexture;
+      uniform vec3 u_color;
       uniform vec2 u_resolution;
       uniform float u_opacity;
       uniform bool u_mouseOver;
@@ -96,8 +105,7 @@ Materials.bar = function(options) {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
         if (u_mouseOver == true) {
-          // tex += vec3(0.2);
-          tex *= vec3(1., 0., 1.);
+          tex *= u_color;
         }
         gl_FragColor = vec4(tex, u_opacity);
       }
