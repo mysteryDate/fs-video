@@ -86,10 +86,12 @@ Materials.bar = function(options) {
     uniforms: {
       u_playing: {value: true},
       u_mouseOver: {value: false},
+      u_mouse: {value: new THREE.Vector2()},
       u_videoTexture: {value: options.video},
       u_opacity: {value: 0},
       u_color: {value: colors[options.index]},
       u_index: {value: options.index},
+      u_clock: {value: 0},
     },
     vertexShader: `
       varying vec2 v_uv;
@@ -101,18 +103,69 @@ Materials.bar = function(options) {
       varying vec2 v_uv;
       uniform sampler2D u_videoTexture;
       uniform vec3 u_color;
+      uniform vec2 u_mouse;
       uniform float u_opacity;
       uniform float u_index;
+      uniform float u_clock;
       uniform bool u_mouseOver;
 
       const float NUM_BARS = 5.0;
 
+      vec2 getRandomVec2(vec2 seed) {
+        seed = vec2(dot(seed, vec2(0.040,-0.250)),
+        dot(seed, vec2(269.5,183.3)));
+        return -1.0 + 2.0 * fract(sin(seed) * 43758.633);
+      }
+
+      vec2 getRandomVec2(float seed) {
+        return getRandomVec2(vec2(seed));
+      }
+
+      float gradientNoise(vec2 st) {
+      vec2 i = floor(st);
+      vec2 f = fract(st);
+
+      vec2 u = smoothstep(0.0, 1.0, f);
+
+      return mix(mix(dot(getRandomVec2(i + vec2(0.0,0.0)), f - vec2(0.0,0.0)),
+                     dot(getRandomVec2(i + vec2(1.0,0.0)), f - vec2(1.0,0.0)), u.x),
+                 mix(dot(getRandomVec2(i + vec2(0.0,1.0)), f - vec2(0.0,1.0)),
+                     dot(getRandomVec2(i + vec2(1.0,1.0)), f - vec2(1.0,1.0)), u.x), u.y);
+      }
+
+      float gradientNoise(float x) {
+        return gradientNoise(vec2(x));
+      }
+
+      vec3 hsv2rgb(in vec3 c) {
+        vec3 rgb = clamp(abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+        rgb = rgb * rgb * (3.0 - 2.0 * rgb);
+        return c.z * mix(vec3(1.0), rgb, c.y);
+      }
+
+      vec3 rgb2hsv(vec3 c) {
+        vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+        vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+        vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+        float d = q.x - min(q.w, q.y);
+        float e = 1.0e-10;
+        return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+      }
+
       void main() {
         vec2 uv = v_uv;
         uv.x = (uv.x + u_index) / NUM_BARS;
+        float noise = gradientNoise(uv * 5.0 + u_clock) * u_mouse.y;
+        vec3 colorHSV = rgb2hsv(u_color);
+        colorHSV.y = u_mouse.y;
+        vec3 color = hsv2rgb(colorHSV);
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
+        tex *= color;
         if (u_mouseOver == true) {
-          tex *= u_color;
+          tex *= smoothstep(0.0, 0.1, rgb2hsv(tex).z);
+          // color *= u_color;
+          // uv += noise/100.0;
         }
         gl_FragColor = vec4(tex, u_opacity);
       }

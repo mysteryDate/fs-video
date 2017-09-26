@@ -150,6 +150,7 @@ function update() {
     var videoT = MM.getCurrentVideoTime();
     for (i = 0; i < barMaterials.length; i++) {
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
+      barMaterials[i].uniforms.u_clock.value = performance.now()/1000;
     }
   }
 
@@ -206,6 +207,7 @@ function onDocumentMouseMove(event) {
     if (i === hoverOver) {
       barMaterials[i].uniforms.u_mouseOver.value = true;
     }
+    barMaterials[i].uniforms.u_mouse.value = mousePosition;
   }
 
   if (MM.getState() === "not started") {
