@@ -22,7 +22,7 @@ var Clip = function(element) {
 var MediaManager = (function(clipElements) {
   var clips = [];
   var state = "not started";
-  var AUDIO_DELAY = 3.600;
+  var AUDIO_DELAY = 3.500;
 
   for (var i = 0; i < clipElements.length; i++) {
     clips.push(new Clip(clipElements[i]));
