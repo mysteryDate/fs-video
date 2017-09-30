@@ -159,14 +159,18 @@ Materials.bar = function(options) {
         float noise = gradientNoise(uv * 5.0 + u_clock) * u_mouse.y;
         vec3 colorHSV = rgb2hsv(u_color);
         colorHSV.y = u_mouse.y;
-        vec3 color = hsv2rgb(colorHSV);
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
-        tex *= color;
         if (u_mouseOver == true) {
-          tex *= smoothstep(0.0, 0.1, rgb2hsv(tex).z);
+          // tex = smoothstep(0.0, 0.1, rgb2hsv(tex).z);
+          // tex *= 2.0;
+          colorHSV.z += 0.2;
+          colorHSV.x += sin(u_clock);
+          // colorHSV.y *= -1.0;
           // color *= u_color;
           // uv += noise/100.0;
         }
+        vec3 color = hsv2rgb(colorHSV);
+        tex *= color;
         gl_FragColor = vec4(tex, u_opacity);
       }
     `
