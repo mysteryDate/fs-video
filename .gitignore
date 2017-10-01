@@ -1,5 +1,5 @@
 videos/original/*
 videos/test/*
-audio/wav/*
+audio/wav/*.wav
 *.mov
 audio/compressed/w-silence/*
