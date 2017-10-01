@@ -162,9 +162,9 @@ Materials.bar = function(options) {
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
         if (u_mouseOver == true) {
           // tex = smoothstep(0.0, 0.1, rgb2hsv(tex).z);
-          // tex *= 2.0;
-          colorHSV.z += 0.2;
-          colorHSV.x += sin(u_clock);
+          tex *= 2.0;
+          // colorHSV.z += 0.2;
+          // colorHSV.x += sin(u_clock);
           // colorHSV.y *= -1.0;
           // color *= u_color;
           // uv += noise/100.0;
