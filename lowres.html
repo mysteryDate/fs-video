@@ -42,7 +42,7 @@
   </head>
   <body>
     <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="base-video" style="display:none">
-      <source src="videos/performance.mp4" type='video/mp4;'>
+      <source src="videos/small/performance.mp4" type='video/mp4;'>
     </video>
 
     <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
@@ -52,7 +52,7 @@
       (function() {
         var NUM_ACTION_CLIPS = 6;
         var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
-        var file = "videos/action-" + index + ".mp4";
+        var file = "videos/small/action-" + index + ".mp4";
         var avSource = document.getElementById("actionVideoSrc");
         avSource.src = file;
         console.log(file);
@@ -61,23 +61,23 @@
 
 
     <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
+      <source src="audio/compressed/small/brodie.mp3" type="audio/mpeg">
     </audio>
 
     <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/nick.mp3" type="audio/mpeg">
+      <source src="audio/compressed/small/nick.mp3" type="audio/mpeg">
     </audio>
 
     <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
+      <source src="audio/compressed/small/chuck.mp3" type="audio/mpeg">
     </audio>
 
     <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/dan.mp3" type="audio/mpeg">
+      <source src="audio/compressed/small/dan.mp3" type="audio/mpeg">
     </audio>
 
     <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/dave.mp3" type="audio/mpeg">
+      <source src="audio/compressed/small/dave.mp3" type="audio/mpeg">
     </audio>
 
     <div id="container"></div>
