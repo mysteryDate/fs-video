@@ -97,6 +97,7 @@ function init() {
     barMeshes.push(mesh);
     barMaterials.push(mat);
   }
+  sizeBars();
 
   var loadingScreenSize = 0.8;
   LOADING_SCREEN = new THREE.Mesh(
@@ -212,6 +213,13 @@ function onDocumentMouseMove(event) {
     LOADING_SCREEN.material.uniforms.u_mouse.value.y = mousePosition.y;
   }
 }
+
+window.onresize = function(event) {
+  // console.log(event);
+  sizeBars();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  size = renderer.getSize();
+};
 
 document.addEventListener("click", onDocumentClick, false);
 document.addEventListener("mousemove", onDocumentMouseMove, false);
