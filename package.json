@@ -1,0 +1,23 @@
+{
+  "name": "ygiaw",
+  "version": "1.0.0",
+  "description": "ygiaw",
+  "main": ".eslintrc.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-html": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mysterydate/fs-video.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mysterydate/fs-video/issues"
+  },
+  "homepage": "https://github.com/mysterydate/fs-video#readme"
+}

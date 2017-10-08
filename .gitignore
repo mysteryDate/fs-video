@@ -3,3 +3,4 @@ videos/test/*
 audio/wav/*.wav
 *.mov
 audio/compressed/w-silence/*
+node_modules/*
