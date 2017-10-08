@@ -54,9 +54,11 @@ function sizeBars() {
   var percentageWidth = width / size.width;
   var percentageHeight = height / size.height;
 
-  barMeshes.forEach(function(mesh) {
+  barMeshes.forEach(function(mesh, index) {
     mesh.scale.x = percentageWidth;
     mesh.scale.y = percentageHeight;
+    mesh.position.x = THREE.Math.mapLinear(index, 0, barMeshes.length, 0, percentageWidth);
+    mesh.position.x += 0.5/barMeshes.length;
   });
 }
 
