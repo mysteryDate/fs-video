@@ -1,8 +1,5 @@
 "use strict";
 
-// var AUDIO_DELAY = 3600; // ms between start of video and audio
-// var AUDIO_DELAY = 0; // ms between start of video and audio
-
 // THREE.js stuff
 var container;
 var renderer;
@@ -40,8 +37,8 @@ function timeStringToInt(time) {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open('GET', 'lyrics_block.json', true);
-  xobj.onreadystatechange = function () {
+  xobj.open("GET", "lyrics_block.json", true);
+  xobj.onreadystatechange = function() {
     if (xobj.readyState === 4 && xobj.status === 200) {
       // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
       callback(xobj.responseText);
@@ -65,7 +62,7 @@ function sizeBars() {
 
 function init() {
   container = document.getElementById("container");
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({antialias: true});
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);

@@ -173,6 +173,6 @@ Materials.bar = function(options) {
         tex *= color;
         gl_FragColor = vec4(tex, u_opacity);
       }
-    `
+    `,
   });
 };

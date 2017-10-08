@@ -1,4 +1,5 @@
 "use strict";
+
 var Clip = function(element) {
   this.element = element;
   this.name = element.id;
@@ -7,17 +8,17 @@ var Clip = function(element) {
   this.started = false;
   this.type = element.classList[1];
 
-   this.start = function() {
+  this.start = function() {
     this.element.play();
     this.playing = true;
     this.started = true;
-  }
+  };
 
-   this.pause = function() {
+  this.pause = function() {
     this.element.pause();
     this.playing = false;
-  }
-}
+  };
+};
 
 var MediaManager = (function(clipElements) {
   var clips = [];
@@ -59,7 +60,7 @@ var MediaManager = (function(clipElements) {
   function canPlay() {
     var result = true;
     clips.forEach(function(c) {
-      if(c.canPlay === false) {
+      if (c.canPlay === false) {
         result = false;
       }
     });
@@ -117,6 +118,11 @@ var MediaManager = (function(clipElements) {
     } else {
       console.warn("Can't pause, not playing. State: " + state);
     }
+  }
+
+  function getCurrentVideoTime() {
+    var vc = getVideoClips();
+    return vc[0].element.currentTime;
   }
 
   function unpause() {
@@ -177,11 +183,6 @@ var MediaManager = (function(clipElements) {
     }
   }
 
-  function getCurrentVideoTime() {
-    var vc = getVideoClips();
-    return vc[0].element.currentTime;
-  }
-
   function getCurrentAudioTime() {
     var ac = getAudioClips();
     return ac[0].element.currentTime;
@@ -219,5 +220,5 @@ var MediaManager = (function(clipElements) {
     update: update,
     clips: clips,
     setVolume: setVolume,
-  }
+  };
 });

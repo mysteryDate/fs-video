@@ -46,7 +46,7 @@ module.exports = {
     "quote-props": ["error", "as-needed", {keywords: false, unnecessary: false, numbers: false}],
     "yoda": ["error", "never", {exceptRange: true}], // allow `if (5 < x && x < 10)` but not `if (5 == x)`
   },
-  "plugins": [
-    "html",
-  ],
+  // "plugins": [
+  //   "html",
+  // ],
 };
