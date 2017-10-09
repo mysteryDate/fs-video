@@ -23,6 +23,10 @@ Materials.loadingIcon = function() {
       uniform float u_time;
       uniform float u_opacity;
 
+      float map(float value, float inMin, float inMax, float outMin, float outMax) {
+        return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+      }
+
       float pulse(float center, float width, float sharpness, float x) {
         float left = center - width / 2.0;
         float right = center + width / 2.0;
@@ -58,6 +62,7 @@ Materials.loadingIcon = function() {
         cross = crossSDF(st, 0.6 + 0.1 * sin(u_time / 1.0));
         color.b += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
         color *= sharpness/2.0 + 1.0;
+        color *= map(width, 0.0, 1.0, 2.0, 1.0);
 
         float edgeSize = 0.02;
         float alpha = smoothstep(0.0, edgeSize, v_uv.x) * smoothstep(1.0, 1.0 - edgeSize, v_uv.x);
