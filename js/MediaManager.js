@@ -59,6 +59,7 @@ var MediaManager = (function(clipElements) {
 
   function canPlay() {
     var result = true;
+    result = false;
     clips.forEach(function(c) {
       if (c.canPlay === false) {
         result = false;

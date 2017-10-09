@@ -59,7 +59,11 @@ Materials.loadingIcon = function() {
         color.b += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
         color *= sharpness/2.0 + 1.0;
 
-        gl_FragColor = vec4(color, u_opacity);
+        float edgeSize = 0.02;
+        float alpha = smoothstep(0.0, edgeSize, v_uv.x) * smoothstep(1.0, 1.0 - edgeSize, v_uv.x);
+        alpha *= smoothstep(0.0, edgeSize, v_uv.y) * smoothstep(1.0, 1.0 - edgeSize, v_uv.y);
+
+        gl_FragColor = vec4(color, u_opacity * alpha);
       }
     `,
   });

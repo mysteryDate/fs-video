@@ -17,3 +17,4 @@ Total: 27
 2017-09-24: 7 hours media manager
 total: 42
 2017-09-24: 8 hours touchup
+2017-10-09: 8 hours
