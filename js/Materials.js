@@ -4,8 +4,10 @@ var Materials = {};
 Materials.loadingIcon = function() {
   return new THREE.ShaderMaterial({
     name: "loading",
+    transparent: true,
     uniforms: {
       u_mouse: {value: new THREE.Vector2(0, 0)},
+      u_opacity: {value: 1},
       u_time: {value: 0},
       u_state: {value: 0},
     },
@@ -20,7 +22,9 @@ Materials.loadingIcon = function() {
       varying vec2 v_uv;
       uniform vec2 u_mouse;
       uniform float u_time;
+      uniform float u_opacity;
       uniform int u_state;
+
       float pulse(float center, float width, float sharpness, float x) {
         float left = center - width / 2.0;
         float right = center + width / 2.0;
@@ -67,7 +71,7 @@ Materials.loadingIcon = function() {
         color.b += pulse(center, width, sharpness, fract(cross * (sin(u_time / 4.0) + 1.1)));
         color *= sharpness/2.0 + 1.0;
 
-        gl_FragColor = vec4(color, 1.0);
+        gl_FragColor = vec4(color, u_opacity);
       }
     `,
   });

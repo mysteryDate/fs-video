@@ -149,6 +149,7 @@ function update() {
   } else {
     var videoT = MM.getCurrentVideoTime();
     for (i = 0; i < barMaterials.length; i++) {
+      LOADING_SCREEN.material.uniforms.u_opacity.value = 1 - videoT/FADE_IN_TIME;
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
       barMaterials[i].uniforms.u_clock.value = performance.now()/1000;
     }
