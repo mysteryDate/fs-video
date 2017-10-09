@@ -212,25 +212,25 @@ function init() {
     lyricsJSON = JSON.parse(response);
   });
   toggleLyrics(undefined, false);
-}
 
-function update() {
-  MM.update();
-  if (MM.getState() === "not started") {
-    LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
-  } else {
-    var videoT = MM.getCurrentVideoTime();
-    for (i = 0; i < barScreen.children.length; i++) {
-      LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
-      barScreen.children[i].material.uniforms.u_opacity.value = videoT/FADE_IN_TIME;
-      barScreen.children[i].material.uniforms.u_clock.value = performance.now()/1000;
+  function update() {
+    MM.update();
+    if (MM.getState() === "not started") {
+      LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
+    } else {
+      var videoT = MM.getCurrentVideoTime();
+      for (i = 0; i < barScreen.children.length; i++) {
+        LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
+        barScreen.children[i].material.uniforms.u_opacity.value = videoT/FADE_IN_TIME;
+        barScreen.children[i].material.uniforms.u_clock.value = performance.now()/1000;
+      }
     }
-  }
 
-  requestAnimationFrame(update);
-  renderer.render(scene, camera);
-  setLyrics();
+    requestAnimationFrame(update);
+    renderer.render(scene, camera);
+    setLyrics();
+  }
+  update();
 }
 
 init();
-update();
