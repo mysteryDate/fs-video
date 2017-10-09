@@ -5,11 +5,13 @@ var container;
 var renderer;
 var camera;
 var scene;
+var raycaster = new THREE.Raycaster();
 
 // Materials and textures
 var videoTextures = [];
 var barMaterials = [];
 var barMeshes = [];
+var barScreen;
 
 var i;
 var lyricsTextField = document.getElementById("lyricsText");
@@ -22,11 +24,21 @@ var LYRICS_ON = false;
 var ASPECT_RATIO = 1920/1080;
 
 // Counters and UI
-var size;
-var mousePosition = new THREE.Vector2();
+var SIZE;
+var MOUSE_POSITION = new THREE.Vector2();
 
 var MM = new MediaManager(document.getElementsByClassName("media"));
-// MM.setVolume(0); // TODO
+
+function toggleLyrics(event, setting) {
+  if (event !== undefined) {
+    event.stopPropagation();
+  }
+  if (setting !== undefined) {
+    LYRICS_ON = setting;
+  } else {
+    LYRICS_ON = !LYRICS_ON;
+  }
+}
 
 function timeStringToInt(time) {
   var minutes = parseInt(time.split(":")[0], 10);
@@ -47,13 +59,12 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
-var barScreen;
 function sizeAndPositionBars() {
-  var width = Math.min(size.width, size.height * ASPECT_RATIO);
-  var height = Math.min(size.height, size.width / ASPECT_RATIO);
+  var width = Math.min(SIZE.width, SIZE.height * ASPECT_RATIO);
+  var height = Math.min(SIZE.height, SIZE.width / ASPECT_RATIO);
 
-  var percentageWidth = width / size.width;
-  var percentageHeight = height / size.height;
+  var percentageWidth = width / SIZE.width;
+  var percentageHeight = height / SIZE.height;
 
   barMeshes.forEach(function(mesh, index) {
     mesh.scale.x = percentageWidth;
@@ -62,57 +73,6 @@ function sizeAndPositionBars() {
   });
 }
 
-function init() {
-  container = document.getElementById("container");
-  renderer = new THREE.WebGLRenderer({antialias: true});
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  container.appendChild(renderer.domElement);
-
-  var videoClips = MM.getVideoClips();
-  videoClips.forEach(function(vc) {
-    var vt = new THREE.VideoTexture(vc.element);
-    vt.minFilter = vt.magFilter = THREE.NearestFilter;
-    vt.format = THREE.RGBFormat;
-    videoTextures.push(vt);
-  });
-
-  camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100);
-  camera.position.set(0.5, 0.5, 50);
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color("black");
-
-  size = renderer.getSize();
-  var numAudioClips = MM.getAudioClips().length;
-  barScreen = new THREE.Group();
-  for (i = 0; i < numAudioClips; i++) {
-    var geo = new THREE.PlaneGeometry(1/numAudioClips, 1);
-    geo.translate(0.5/numAudioClips, 0, 0); // so that the mesh is centered in x
-    var mat = Materials.bar({
-      video: videoTextures[0],
-      index: i,
-    });
-    var mesh = new THREE.Mesh(geo, mat);
-    barScreen.add(mesh);
-    barMeshes.push(mesh);
-    barMaterials.push(mat);
-  }
-  barScreen.position.set(0.5, 0.5, 0);
-  scene.add(barScreen);
-  sizeAndPositionBars();
-
-  var loadingScreenSize = 0.8;
-  LOADING_SCREEN = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize),
-    Materials.loadingIcon());
-  LOADING_SCREEN.position.set(0.5, 0.5, -1);
-  scene.add(LOADING_SCREEN);
-
-  loadJSON(function(response) {
-  // Parse JSON string into object
-    lyricsJSON = JSON.parse(response);
-  });
-}
 
 function setLyrics() {
   if (lyricsJSON !== undefined) {
@@ -142,6 +102,126 @@ function setLyrics() {
   }
 }
 
+function onDocumentClick(event) {
+  event.preventDefault();
+
+  var ac = MM.getAudioClips();
+  var mouse = new THREE.Vector2();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  var intersectedBars = raycaster.intersectObjects(barScreen.children);
+  for (i = 0; i < intersectedBars.length; i++) {
+    var isPlaying = intersectedBars[i].object.material.uniforms.u_playing;
+    var videoTexture = intersectedBars[i].object.material.uniforms.u_videoTexture;
+    isPlaying.value = !isPlaying.value;
+    if (isPlaying.value === true) {
+      videoTexture.value = videoTextures[0];
+    } else {
+      videoTexture.value = videoTextures[1];
+    }
+  }
+
+  for (i = 0; i < ac.length; i++) {
+    if (barScreen.children[i].material.uniforms.u_playing.value) {
+      ac[i].element.volume = 1;
+    } else {
+      ac[i].element.volume = 0;
+    }
+  }
+
+  if (MM.getState() === "not started") {
+    var state = LOADING_SCREEN.material.uniforms.u_state.value;
+    state = (state + 1) % 3;
+    LOADING_SCREEN.material.uniforms.u_state.value = state;
+  }
+}
+
+function onDocumentMouseMove(event) {
+  event.preventDefault();
+
+  var mouse = new THREE.Vector2();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  var intersectedBars = raycaster.intersectObjects(barScreen.children);
+  for (i = 0; i < barScreen.children.length; i++) {
+    barScreen.children[i].material.uniforms.u_mouseOver.value = false;
+    barScreen.children[i].material.uniforms.u_mouse.value.x = (mouse.x + 1) / 2;
+    barScreen.children[i].material.uniforms.u_mouse.value.y = (mouse.y + 1) / 2;
+  }
+  for (i = 0; i < intersectedBars.length; i++) {
+    intersectedBars[i].object.material.uniforms.u_mouseOver.value = true;
+  }
+
+  if (MM.getState() === "not started") {
+    LOADING_SCREEN.material.uniforms.u_mouse.value.x = (mouse.x + 1) / 2;
+    LOADING_SCREEN.material.uniforms.u_mouse.value.y = (mouse.y + 1) / 2;
+  }
+}
+
+window.onresize = function() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  SIZE = renderer.getSize();
+  sizeAndPositionBars();
+};
+
+document.addEventListener("click", onDocumentClick, false);
+document.addEventListener("mousemove", onDocumentMouseMove, false);
+
+function init() {
+  container = document.getElementById("container");
+  renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
+
+  var videoClips = MM.getVideoClips();
+  videoClips.forEach(function(vc) {
+    var vt = new THREE.VideoTexture(vc.element);
+    vt.minFilter = vt.magFilter = THREE.NearestFilter;
+    vt.format = THREE.RGBFormat;
+    videoTextures.push(vt);
+  });
+
+  camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 100);
+  camera.position.set(0.5, 0.5, 50);
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color("black");
+
+  SIZE = renderer.getSize();
+  var audioClips = MM.getAudioClips();
+  barScreen = new THREE.Group();
+  for (i = 0; i < audioClips.length; i++) {
+    var geo = new THREE.PlaneGeometry(1/audioClips.length, 1);
+    geo.translate(0.5/audioClips.length, 0, 0); // so that the mesh is centered in x
+    var mat = Materials.bar({
+      video: videoTextures[0],
+      index: i,
+    });
+    var mesh = new THREE.Mesh(geo, mat);
+    mesh.name = audioClips[i].name;
+    barScreen.add(mesh);
+    barMeshes.push(mesh);
+    barMaterials.push(mat);
+  }
+  barScreen.position.set(0.5, 0.5, 0);
+  scene.add(barScreen);
+  sizeAndPositionBars();
+
+  var loadingScreenSize = 0.8;
+  LOADING_SCREEN = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize),
+    Materials.loadingIcon());
+  LOADING_SCREEN.position.set(0.5, 0.5, -1);
+  scene.add(LOADING_SCREEN);
+
+  loadJSON(function(response) {
+    lyricsJSON = JSON.parse(response);
+  });
+  toggleLyrics(undefined, false);
+}
+
 function update() {
   MM.update();
   if (MM.getState() === "not started") {
@@ -159,72 +239,6 @@ function update() {
   renderer.render(scene, camera);
   setLyrics();
 }
-
-function toggleLyrics(event) {
-  event.stopPropagation();
-  LYRICS_ON = !LYRICS_ON;
-}
-
-function onDocumentClick(event) {
-  event.preventDefault();
-
-  size = renderer.getSize();
-  mousePosition.x = event.clientX / size.width;
-  mousePosition.y = 1 - event.clientY / size.height;
-  var ac = MM.getAudioClips();
-  var hoverOver = Math.floor(mousePosition.x * ac.length);
-
-  if (ac[hoverOver].element.volume === 1) {
-    ac[hoverOver].element.volume = 0;
-  } else {
-    ac[hoverOver].element.volume = 1;
-  }
-
-  barMaterials[hoverOver].uniforms.u_playing.value = !barMaterials[hoverOver].uniforms.u_playing.value;
-  if (barMaterials[hoverOver].uniforms.u_playing.value === true) {
-    barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[0];
-  } else {
-    barMaterials[hoverOver].uniforms.u_videoTexture.value = videoTextures[1];
-  }
-
-  if (MM.getState() === "not started") {
-    var state = LOADING_SCREEN.material.uniforms.u_state.value;
-    state = (state + 1) % 3;
-    LOADING_SCREEN.material.uniforms.u_state.value = state;
-  }
-}
-
-function onDocumentMouseMove(event) {
-  event.preventDefault();
-
-  size = renderer.getSize();
-  mousePosition.x = event.clientX / size.width;
-  mousePosition.y = 1 - event.clientY / size.height;
-
-  var hoverOver = Math.floor(mousePosition.x * barMaterials.length);
-
-  for (i = 0; i < barMaterials.length; i++) {
-    barMaterials[i].uniforms.u_mouseOver.value = false;
-    if (i === hoverOver) {
-      barMaterials[i].uniforms.u_mouseOver.value = true;
-    }
-    barMaterials[i].uniforms.u_mouse.value = mousePosition;
-  }
-
-  if (MM.getState() === "not started") {
-    LOADING_SCREEN.material.uniforms.u_mouse.value.x = mousePosition.x;
-    LOADING_SCREEN.material.uniforms.u_mouse.value.y = mousePosition.y;
-  }
-}
-
-window.onresize = function() {
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  size = renderer.getSize();
-  sizeAndPositionBars();
-};
-
-document.addEventListener("click", onDocumentClick, false);
-document.addEventListener("mousemove", onDocumentMouseMove, false);
 
 init();
 update();
