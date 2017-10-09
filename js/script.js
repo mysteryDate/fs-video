@@ -71,6 +71,12 @@ function sizeAndPositionBars() {
 
 
 function setLyrics() {
+  var isChuckOn;
+  for (i = 0; i < barScreen.children.length; i++) {
+    if (barScreen.children[i].name === "chuck") {
+      isChuckOn = barScreen.children[i].material.uniforms.u_playing.value;
+    }
+  }
   if (lyricsJSON !== undefined) {
     var t = MM.getCurrentAudioTime();
     var currentLyric = lyricsJSON[lyricsIndex];
@@ -88,7 +94,7 @@ function setLyrics() {
       var normalizedPosition = (t - thisStart) / (thisEnd - thisStart);
       lyricsTextField.textContent = currentLyric.lyrics[Math.floor(normalizedPosition * lyricsLength)];
     }
-    if (lyricsTextField.textContent === "" || LYRICS_ON === false) {
+    if (lyricsTextField.textContent === "" || LYRICS_ON === false || isChuckOn === false) {
       lyricsTextField.style.display = "none";
     } else {
       lyricsTextField.style.display = "inline-block";
@@ -125,12 +131,6 @@ function onDocumentClick(event) {
       ac[i].element.volume = 0;
     }
   }
-
-  if (MM.getState() === "not started") {
-    var state = LOADING_SCREEN.material.uniforms.u_state.value;
-    state = (state + 1) % 3;
-    LOADING_SCREEN.material.uniforms.u_state.value = state;
-  }
 }
 
 function onDocumentMouseMove(event) {
@@ -140,12 +140,12 @@ function onDocumentMouseMove(event) {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
-  var intersectedBars = raycaster.intersectObjects(barScreen.children);
   for (i = 0; i < barScreen.children.length; i++) {
     barScreen.children[i].material.uniforms.u_mouseOver.value = false;
     barScreen.children[i].material.uniforms.u_mouse.value.x = (mouse.x + 1) / 2;
     barScreen.children[i].material.uniforms.u_mouse.value.y = (mouse.y + 1) / 2;
   }
+  var intersectedBars = raycaster.intersectObjects(barScreen.children);
   for (i = 0; i < intersectedBars.length; i++) {
     intersectedBars[i].object.material.uniforms.u_mouseOver.value = true;
   }
