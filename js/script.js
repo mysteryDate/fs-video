@@ -105,7 +105,7 @@ function init() {
   LOADING_SCREEN = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize),
     Materials.loadingIcon());
-  LOADING_SCREEN.position.set(0.5, 0.5, 0);
+  LOADING_SCREEN.position.set(0.5, 0.5, -1);
   scene.add(LOADING_SCREEN);
 
   loadJSON(function(response) {
@@ -149,7 +149,7 @@ function update() {
   } else {
     var videoT = MM.getCurrentVideoTime();
     for (i = 0; i < barMaterials.length; i++) {
-      LOADING_SCREEN.material.uniforms.u_opacity.value = 1 - videoT/FADE_IN_TIME;
+      LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
       barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
       barMaterials[i].uniforms.u_clock.value = performance.now()/1000;
     }
