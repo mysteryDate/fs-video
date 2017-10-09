@@ -9,8 +9,6 @@ var raycaster = new THREE.Raycaster();
 
 // Materials and textures
 var videoTextures = [];
-var barMaterials = [];
-var barMeshes = [];
 var barScreen;
 
 var i;
@@ -24,9 +22,6 @@ var LYRICS_ON = false;
 var ASPECT_RATIO = 1920/1080;
 
 // Counters and UI
-var SIZE;
-var MOUSE_POSITION = new THREE.Vector2();
-
 var MM = new MediaManager(document.getElementsByClassName("media"));
 
 function toggleLyrics(event, setting) {
@@ -60,16 +55,17 @@ function loadJSON(callback) {
 }
 
 function sizeAndPositionBars() {
-  var width = Math.min(SIZE.width, SIZE.height * ASPECT_RATIO);
-  var height = Math.min(SIZE.height, SIZE.width / ASPECT_RATIO);
+  var size = renderer.getSize();
+  var width = Math.min(size.width, size.height * ASPECT_RATIO);
+  var height = Math.min(size.height, size.width / ASPECT_RATIO);
 
-  var percentageWidth = width / SIZE.width;
-  var percentageHeight = height / SIZE.height;
+  var percentageWidth = width / size.width;
+  var percentageHeight = height / size.height;
 
-  barMeshes.forEach(function(mesh, index) {
+  barScreen.children.forEach(function(mesh, index) {
     mesh.scale.x = percentageWidth;
     mesh.scale.y = percentageHeight;
-    mesh.position.x = THREE.Math.mapLinear(index, 0, barMeshes.length, -percentageWidth/2, percentageWidth/2);
+    mesh.position.x = THREE.Math.mapLinear(index, 0, barScreen.children.length, -percentageWidth/2, percentageWidth/2);
   });
 }
 
@@ -162,7 +158,6 @@ function onDocumentMouseMove(event) {
 
 window.onresize = function() {
   renderer.setSize(window.innerWidth, window.innerHeight);
-  SIZE = renderer.getSize();
   sizeAndPositionBars();
 };
 
@@ -189,7 +184,6 @@ function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color("black");
 
-  SIZE = renderer.getSize();
   var audioClips = MM.getAudioClips();
   barScreen = new THREE.Group();
   for (i = 0; i < audioClips.length; i++) {
@@ -202,8 +196,6 @@ function init() {
     var mesh = new THREE.Mesh(geo, mat);
     mesh.name = audioClips[i].name;
     barScreen.add(mesh);
-    barMeshes.push(mesh);
-    barMaterials.push(mat);
   }
   barScreen.position.set(0.5, 0.5, 0);
   scene.add(barScreen);
@@ -228,10 +220,10 @@ function update() {
     LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
   } else {
     var videoT = MM.getCurrentVideoTime();
-    for (i = 0; i < barMaterials.length; i++) {
+    for (i = 0; i < barScreen.children.length; i++) {
       LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
-      barMaterials[i].uniforms.u_opacity.value = videoT/FADE_IN_TIME;
-      barMaterials[i].uniforms.u_clock.value = performance.now()/1000;
+      barScreen.children[i].material.uniforms.u_opacity.value = videoT/FADE_IN_TIME;
+      barScreen.children[i].material.uniforms.u_clock.value = performance.now()/1000;
     }
   }
 
