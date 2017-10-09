@@ -47,7 +47,8 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
-function sizeBars() {
+var barScreen;
+function sizeAndPositionBars() {
   var width = Math.min(size.width, size.height * ASPECT_RATIO);
   var height = Math.min(size.height, size.width / ASPECT_RATIO);
 
@@ -57,8 +58,7 @@ function sizeBars() {
   barMeshes.forEach(function(mesh, index) {
     mesh.scale.x = percentageWidth;
     mesh.scale.y = percentageHeight;
-    mesh.position.x = THREE.Math.mapLinear(index, 0, barMeshes.length, 0, percentageWidth);
-    mesh.position.x += 0.5/barMeshes.length;
+    mesh.position.x = THREE.Math.mapLinear(index, 0, barMeshes.length, -percentageWidth/2, percentageWidth/2);
   });
 }
 
@@ -83,23 +83,23 @@ function init() {
   scene.background = new THREE.Color("black");
 
   size = renderer.getSize();
-  var dpr = renderer.getPixelRatio();
   var numAudioClips = MM.getAudioClips().length;
+  barScreen = new THREE.Group();
   for (i = 0; i < numAudioClips; i++) {
     var geo = new THREE.PlaneGeometry(1/numAudioClips, 1);
+    geo.translate(0.5/numAudioClips, 0, 0); // so that the mesh is centered in x
     var mat = Materials.bar({
       video: videoTextures[0],
       index: i,
     });
     var mesh = new THREE.Mesh(geo, mat);
-    mesh.position.x = THREE.Math.mapLinear(i, 0, numAudioClips, 0, 1);
-    mesh.position.x += 0.5/numAudioClips;
-    mesh.position.y = 0.5;
-    scene.add(mesh);
+    barScreen.add(mesh);
     barMeshes.push(mesh);
     barMaterials.push(mat);
   }
-  sizeBars();
+  barScreen.position.set(0.5, 0.5, 0);
+  scene.add(barScreen);
+  sizeAndPositionBars();
 
   var loadingScreenSize = 0.8;
   LOADING_SCREEN = new THREE.Mesh(
@@ -216,11 +216,10 @@ function onDocumentMouseMove(event) {
   }
 }
 
-window.onresize = function(event) {
-  // console.log(event);
-  sizeBars();
+window.onresize = function() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   size = renderer.getSize();
+  sizeAndPositionBars();
 };
 
 document.addEventListener("click", onDocumentClick, false);
