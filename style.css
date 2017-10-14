@@ -1,0 +1,86 @@
+body {
+  margin: 0px;
+  background-color: black;
+}
+#lyricsContainer {
+  position: absolute;
+  bottom: 5%;
+  width: 100%;
+  text-align: center;
+}
+#lyricsText {
+  background-color: black;
+  white-space: pre;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: large;
+}
+* {
+  color: white;
+  font-family: helvetica;
+  font-weight: 100;
+}
+a {
+  color: cyan;
+}
+.overlay {
+  position: absolute;
+}
+#tutorial {
+  font-size: large;
+  left: 5%;
+  width: 100%;
+  top: 5%;
+}
+#openingCredits {
+  top: 10px;
+  font-size: large;
+  left: 5%;
+  width: 100%;
+  top: 5%;
+  opacity: 0;
+  display: none;
+}
+#closingCredits {
+  top: 10px;
+  font-size: large;
+  left: 5%;
+  width: 100%;
+  top: 5%;
+  opacity: 0;
+  display: none;
+}
+#loadingTextWrapper {
+  position: absolute;
+  top: 90%;
+  width: 100%;
+  text-align: center;
+}
+#loadingText {
+  color: white;
+  font-size: xx-large;
+  font-weight: 400;
+  opacity: 1;
+}
+#cc-button {
+  position: absolute;
+  opacity: 0.5;
+  display: none;
+  width: 54px;
+  height: 40px;
+  bottom: 0px;
+  right: 10%;
+  background-image: url(img/cc-button.jpg);
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+#cc-button:hover {
+  opacity: 1;
+}
+#muchFact-logo {
+  background-image: url(img/muchfact-logo.jpg);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 250px;
+  height: 75px;
+}

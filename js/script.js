@@ -128,6 +128,9 @@ function onDocumentClick(event) {
     MM.start();
     return;
   }
+  if (MM.getState() === "ended") {
+    window.location.reload(false);
+  }
 
   var ac = MM.getAudioClips();
   var mouse = new THREE.Vector2();
@@ -260,11 +263,13 @@ function init() {
       loadingText.style.opacity = 1;
       loadingText.textContent = "CLICK TO PLAY";
     } else if (MM.getState() === "ended") {
-      if (endTime === undefined) {
-        endTime = performance.now()/1000;
-      }
       var openingCredits = document.getElementById("openingCredits");
       var closingCredits = document.getElementById("closingCredits");
+      if (endTime === undefined) {
+        openingCredits.style.display = "block";
+        closingCredits.style.display = "block";
+        endTime = performance.now()/1000;
+      }
       var t = (performance.now()/1000 - endTime)/FADE_IN_TIME;
       setBarUniform("u_opacity", 1 - t);
       var openingOpacity = THREE.Math.smoothstep(t, 0, 1) * THREE.Math.smoothstep(2 - t, 0, 1);
