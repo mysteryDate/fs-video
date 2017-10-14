@@ -54,6 +54,12 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
+function setBarUniform(name, value) {
+  for (i = 0; i < barScreen.children.length; i++) {
+    barScreen.children[i].material.uniforms[name].value = value;
+  }
+}
+
 function sizeAndPositionBars() {
   var size = renderer.getSize();
   var width = Math.min(size.width, size.height * ASPECT_RATIO);
