@@ -25,6 +25,7 @@ var Clip = function(element) {
 var MediaManager = (function(clipElements, verbose) {
   var clips = [];
   var state = "not started";
+  var ready = false;
   var AUDIO_DELAY = 3.500;
   var VERBOSE = (verbose !== undefined) ? verbose : false;
 
@@ -64,6 +65,7 @@ var MediaManager = (function(clipElements, verbose) {
 
   function canPlay() {
     var result = true;
+    // result = false; // FIXME
     clips.forEach(function(c) {
       if (c.canPlay === false) {
         result = false;
@@ -206,12 +208,16 @@ var MediaManager = (function(clipElements, verbose) {
 
   function update() {
     if (state === "not started" && canPlay()) {
-      startVideo();
+      ready = true;
     } else if (state === "paused" && canPlay()) {
       unpause();
     } else if (state === "video playing" && getCurrentVideoTime() >= AUDIO_DELAY) {
       startAudio();
     }
+  }
+
+  function ended() {
+    state = "ended";
   }
 
   function getState() {
@@ -229,5 +235,8 @@ var MediaManager = (function(clipElements, verbose) {
     update: update,
     clips: clips,
     setVolume: setVolume,
+    start: startVideo,
+    ended: ended,
+    ready: function() { return ready; },
   };
 });

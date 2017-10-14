@@ -8,6 +8,7 @@
     <style>
       body {
         margin: 0px;
+        background-color: black;
       }
       #lyricsContainer {
         position: absolute;
@@ -17,80 +18,174 @@
       }
       #lyricsText {
         background-color: black;
-        color: white;
-        font-size: large;
-        font-family: helvetica;
-        font-weight: 100;
         white-space: pre;
         padding: 10px 20px;
         border-radius: 10px;
+        font-size: large;
+      }
+      * {
+        color: white;
+        font-family: helvetica;
+        font-weight: 100;
+      }
+      a {
+        color: cyan;
+      }
+      .overlay {
+        position: absolute;
+      }
+      #tutorial {
+        font-size: large;
+        left: 5%;
+        width: 100%;
+        top: 5%;
+      }
+      #openingCredits {
+        top: 10px;
+        font-size: large;
+        left: 5%;
+        width: 100%;
+        top: 5%;
+        opacity: 0;
+      }
+      #closingCredits {
+        top: 10px;
+        font-size: large;
+        left: 5%;
+        width: 100%;
+        top: 5%;
+        opacity: 0;
+      }
+      #loadingTextWrapper {
+        position: absolute;
+        top: 90%;
+        width: 100%;
+        text-align: center;
+      }
+      #loadingText {
+        color: white;
+        font-size: xx-large;
+        font-weight: 400;
+        opacity: 1;
       }
       #cc-button {
         position: absolute;
+        opacity: 0.5;
+        display: none;
         width: 54px;
         height: 40px;
         bottom: 0px;
         right: 10%;
-        background-image: url(cc-button.jpg);
+        background-image: url(img/cc-button.jpg);
         background-size: 100%;
         background-repeat: no-repeat;
-        opacity: 0.5;
       }
       #cc-button:hover {
         opacity: 1;
       }
+      #muchFact-logo {
+        background-image: url(img/muchFact-logo.jpg);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        width: 250px;
+        height: 75px;
+      }
     </style>
   </head>
   <body>
-    <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="base-video" style="display:none">
-      <source src="videos/performance.mp4" type='video/mp4;'>
-    </video>
+    <!-- MEDIA -->
+      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" id="base-video" style="display:none">
+        <source src="videos/performance.mp4" type='video/mp4;'>
+      </video>
 
-    <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
-      <source src="" type='video/mp4;' id="actionVideoSrc">
-    </video>
-    <script type="text/javascript">
-      (function() {
-        var NUM_ACTION_CLIPS = 6;
-        var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
-        var file = "videos/action-" + index + ".mp4";
-        var avSource = document.getElementById("actionVideoSrc");
-        avSource.src = file;
-        console.log(file);
-      })();
-    </script>
+      <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
+        <source src="" type='video/mp4;' id="actionVideoSrc">
+      </video>
+      <script type="text/javascript">
+        (function() {
+          var NUM_ACTION_CLIPS = 6;
+          var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
+          var file = "videos/action-" + index + ".mp4";
+          var avSource = document.getElementById("actionVideoSrc");
+          avSource.src = file;
+          console.log(file);
+        })();
+      </script>
 
 
-    <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
-    </audio>
+      <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
+        <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
+      </audio>
 
-    <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/nick.mp3" type="audio/mpeg">
-    </audio>
+      <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
+        <source src="audio/compressed/nick.mp3" type="audio/mpeg">
+      </audio>
 
-    <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
-    </audio>
+      <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
+        <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
+      </audio>
 
-    <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/dan.mp3" type="audio/mpeg">
-    </audio>
+      <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
+        <source src="audio/compressed/dan.mp3" type="audio/mpeg">
+      </audio>
 
-    <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-      <source src="audio/compressed/dave.mp3" type="audio/mpeg">
-    </audio>
+      <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
+        <source src="audio/compressed/dave.mp3" type="audio/mpeg">
+      </audio>
+    <!--  -->
 
-    <div id="container"></div>
-    <div id="lyricsContainer">
-      <div id="lyricsText">
+    <!-- HTML -->
+      <div id="container"></div>
+
+      <div class="overlay" id="tutorial">
+        <h1>Direct Future States</h1>
+        <p>
+          - click on a member to remove/include them from the performance<br>
+          - colour the frame by moving your mouse<br>
+          - try reloading for alternate footage
+        </p>
+        <p>Taking too long to load? Try the <a href="lowRes.html">low res version</a></p>
       </div>
-    </div>
 
-    <div id="cc-button" onclick="toggleLyrics(event)"></div>
+      <div class="overlay" id="openingCredits">
+        <p>
+          You Got It All Wrong<br>
+          Future States<br>
+          Golden Brown Records<br>
+        </p>
+      </div>
 
-    <script src="js/MediaManager.js"></script>
-    <script src="js/Materials.js"></script>
-    <script src="js/script.js"></script>
+      <div class="overlay" id="closingCredits">
+        <p>
+          Music by Future States<br>
+          Recorded and engineered by Daniel Gélinas<br>
+          Directed by Daniel Slapcoff<br>
+          Edited by Design Eightie Trois<br>
+          Filmed at NOMAD Nation in Montreal, QC<br>
+          Interactive video by Aaron Krajeski<br>
+          <br>
+          Produced with the financial assistance of MuchFACT, a division of Bell Media Inc.<br>
+          <div id="muchFact-logo"></div>
+          Click to replay
+        </p>
+      </div>
+
+      <div id="lyricsContainer">
+        <div id="lyricsText">
+        </div>
+      </div>
+
+      <div id="loadingTextWrapper">
+        <div id="loadingText">LOADING</div>
+      </div>
+
+      <div id="cc-button" onclick="toggleLyrics(event)"></div>
+    <!--  -->
+
+    <!-- SCRIPTS -->
+      <script src="js/MediaManager.js"></script>
+      <script src="js/Materials.js"></script>
+      <script src="js/script.js"></script>
+    <!--  -->
   </body>
 </html>

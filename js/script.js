@@ -17,9 +17,13 @@ var lyricsJSON;
 var lyricsIndex = 0;
 
 var LOADING_SCREEN;
+var loadingText = document.getElementById("loadingText");
+var loadingScreenSize = 0.3;
 var FADE_IN_TIME = 3;
 var LYRICS_ON = false;
 var ASPECT_RATIO = 1920/1080;
+var endTime;
+var readyTime;
 
 // Counters and UI
 var MM = new MediaManager(document.getElementsByClassName("media"));
@@ -36,9 +40,9 @@ function toggleLyrics(event, setting) {
 
   var ccButton = document.getElementById("cc-button");
   if (LYRICS_ON) {
-    ccButton.style.backgroundImage = "url(cc-button-on.jpg)";
+    ccButton.style.backgroundImage = "url(img/cc-button-on.jpg)";
   } else {
-    ccButton.style.backgroundImage = "url(cc-button.jpg)";
+    ccButton.style.backgroundImage = "url(img/cc-button.jpg)";
   }
 }
 
@@ -51,7 +55,7 @@ function timeStringToInt(time) {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open("GET", "lyrics_block.json", true);
+  xobj.open("GET", "lyrics.json", true);
   xobj.onreadystatechange = function() {
     if (xobj.readyState === 4 && xobj.status === 200) {
       // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -120,7 +124,10 @@ function setLyrics() {
 }
 
 function onDocumentClick(event) {
-  event.preventDefault();
+  if (MM.getState() === "not started" && MM.ready) {
+    MM.start();
+    return;
+  }
 
   var ac = MM.getAudioClips();
   var mouse = new THREE.Vector2();
@@ -221,11 +228,13 @@ function init() {
   scene.add(barScreen);
   sizeAndPositionBars();
 
-  var loadingScreenSize = 0.8;
   LOADING_SCREEN = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize),
-    Materials.loadingIcon());
-  LOADING_SCREEN.position.set(0.5, 0.5, -1);
+    new THREE.PlaneBufferGeometry(1, 1),
+    Materials.loadingIcon()
+  );
+  var loadingScreenScale = new THREE.Vector3(loadingScreenSize * window.innerHeight / window.innerWidth, loadingScreenSize, 1);
+  LOADING_SCREEN.scale.copy(loadingScreenScale);
+  LOADING_SCREEN.position.set(0.5, loadingScreenScale.y/2 + 0.1, -1);
   scene.add(LOADING_SCREEN);
 
   loadJSON(function(response) {
@@ -239,17 +248,39 @@ function init() {
 
   function update() {
     MM.update();
-    if (MM.getState() === "not started") {
+    if (MM.getState() === "not started" && !MM.ready) {
       LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
+      loadingText.style.opacity = Math.sin(2 * performance.now()/1000)/2 + 0.5;
+    } else if (MM.getState() === "not started" && MM.ready) {
+      if (readyTime === undefined) {
+        readyTime = performance.now()/1000;
+      }
+      loadingText.style.opacity = 1;
+      loadingText.textContent = "CLICK TO PLAY";
+    } else if (MM.getState() === "ended") {
+      if (endTime === undefined) {
+        endTime = performance.now()/1000;
+      }
+      var openingCredits = document.getElementById("openingCredits");
+      var closingCredits = document.getElementById("closingCredits");
+      var t = (performance.now()/1000 - endTime)/FADE_IN_TIME;
+      setBarUniform("u_opacity", 1 - t);
+      var openingOpacity = THREE.Math.smoothstep(t, 0, 1) * THREE.Math.smoothstep(2 - t, 0, 1);
+      openingCredits.style.opacity = openingOpacity;
+      closingCredits.style.opacity = t - 2;
     } else {
       var videoT = MM.getCurrentVideoTime();
+      var tutorial = document.getElementById("tutorial");
+      var ccButton = document.getElementById("cc-button");
+      ccButton.style.display = "block";
+      LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
+      loadingText.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
+      tutorial.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
       for (i = 0; i < barScreen.children.length; i++) {
-        LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
         barScreen.children[i].material.uniforms.u_opacity.value = videoT/FADE_IN_TIME;
         barScreen.children[i].material.uniforms.u_clock.value = performance.now()/1000;
       }
     }
-
     requestAnimationFrame(update);
     renderer.render(scene, camera);
     setLyrics();

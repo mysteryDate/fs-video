@@ -30,6 +30,11 @@ float crossSDF(vec2 st, float s) {
   return min(rectSDF(st, size.xy), rectSDF(st, size.yx));
 }
 
+float triSDF(vec2 st) {
+  st = 2.0 * (2.0 * st - 1.0);
+  return max(abs(st.x) * 0.866025 + st.y * 0.5, -st.y * 0.5);
+}
+
 float fill(float x, float size) {
   return 1.0 - step(size, x);
 }
@@ -59,6 +64,10 @@ void main() {
   color.b += pulse(0.5 - width/2.0, 0.5 + width/2.0, sharpness, fract(cross * 1.0 * (sin(u_time / 4.0) + 1.1)));
 
   // color += pulse(0.3, 0.8, 0.2, fract(cross));
+  float edgeBlur = 0.1;
+  float rectMask = rectSDF(st, vec2(1.0));
+  float triMask = triSDF(rotateAboutPoint(st - vec2(0.1, 0.0), PI/2.0, vec2(0.5))) + 0.2;
+  color *= smoothstep(1.0, 1.0 - edgeBlur, mix(rectMask, triMask, sin(u_time)/2.0 + 0.5));
   gl_FragColor = vec4(color * (sharpness/2.0 + 1.0), 1.0);
   // gl_FragColor = vec4(color, 1.0);
 }
