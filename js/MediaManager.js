@@ -222,5 +222,3 @@ var MediaManager = (function(clipElements) {
     setVolume: setVolume,
   };
 });
-
-console.log(MediaManager);

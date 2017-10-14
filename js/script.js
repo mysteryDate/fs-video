@@ -226,6 +226,11 @@ function init() {
   });
   toggleLyrics(undefined, false);
 
+  var url = window.location.href;
+  var displayMode = url.split("dm=")[1];
+  console.log(displayMode);
+  setBarUniform("u_displayMode", displayMode);
+
   function update() {
     MM.update();
     if (MM.getState() === "not started") {
