@@ -33,6 +33,13 @@ function toggleLyrics(event, setting) {
   } else {
     LYRICS_ON = !LYRICS_ON;
   }
+
+  var ccButton = document.getElementById("cc-button");
+  if (LYRICS_ON) {
+    ccButton.style.backgroundImage = "url(cc-button-on.jpg)";
+  } else {
+    ccButton.style.backgroundImage = "url(cc-button.jpg)";
+  }
 }
 
 function timeStringToInt(time) {
