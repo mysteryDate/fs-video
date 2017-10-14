@@ -73,6 +73,8 @@ function sizeAndPositionBars() {
     mesh.scale.y = percentageHeight;
     mesh.position.x = THREE.Math.mapLinear(index, 0, barScreen.children.length, -percentageWidth/2, percentageWidth/2);
   });
+
+  setBarUniform("u_verticalSize", percentageHeight);
 }
 
 
@@ -146,15 +148,20 @@ function onDocumentMouseMove(event) {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
+  var intersectedBars = raycaster.intersectObjects(barScreen.children);
+  var intersectedIndex = -1;
   for (i = 0; i < barScreen.children.length; i++) {
     barScreen.children[i].material.uniforms.u_mouseOver.value = false;
     barScreen.children[i].material.uniforms.u_mouse.value.x = (mouse.x + 1) / 2;
     barScreen.children[i].material.uniforms.u_mouse.value.y = (mouse.y + 1) / 2;
+    if (intersectedBars.length > 0 && intersectedBars[0].object === barScreen.children[i]) {
+      intersectedIndex = i;
+    }
   }
-  var intersectedBars = raycaster.intersectObjects(barScreen.children);
   for (i = 0; i < intersectedBars.length; i++) {
     intersectedBars[i].object.material.uniforms.u_mouseOver.value = true;
   }
+  setBarUniform("u_intersectedIndex", intersectedIndex);
 
   if (MM.getState() === "not started") {
     LOADING_SCREEN.material.uniforms.u_mouse.value.x = (mouse.x + 1) / 2;

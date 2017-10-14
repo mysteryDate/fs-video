@@ -92,6 +92,8 @@ Materials.bar = function(options) {
       u_opacity: {value: 0},
       u_color: {value: colors[options.index]},
       u_index: {value: options.index},
+      u_intersectedIndex: {value: -1},
+      u_verticalSize: {value: 1},
       u_clock: {value: 0},
     },
     vertexShader: `
@@ -107,6 +109,8 @@ Materials.bar = function(options) {
       uniform vec2 u_mouse;
       uniform float u_opacity;
       uniform float u_index;
+      uniform float u_intersectedIndex;
+      uniform float u_verticalSize;
       uniform float u_clock;
       uniform bool u_mouseOver;
 
@@ -154,22 +158,27 @@ Materials.bar = function(options) {
         return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
       }
 
+      float map(float value, float inMin, float inMax, float outMin, float outMax) {
+        return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+      }
+
       void main() {
         vec2 uv = v_uv;
-        uv.x = (uv.x + u_index) / NUM_BARS;
-        float noise = gradientNoise(uv * 5.0 + u_clock) * u_mouse.y;
+        uv.x = (v_uv.x + u_index) / NUM_BARS;
         vec3 colorHSV = rgb2hsv(u_color);
-        colorHSV.y = u_mouse.y;
-        vec3 tex = texture2D(u_videoTexture, uv).rgb;
-        if (u_mouseOver == true) {
-          // tex = smoothstep(0.0, 0.1, rgb2hsv(tex).z);
-          tex *= 2.0;
-          // colorHSV.z += 0.2;
-          // colorHSV.x += sin(u_clock);
-          // colorHSV.y *= -1.0;
-          // color *= u_color;
-          // uv += noise/100.0;
+        // colorHSV.y = u_mouse.y;
+        if (u_index <= u_intersectedIndex) {
+          colorHSV.y = 1.0;
+        } else {
+          colorHSV.y = 0.0;
         }
+        vec3 tex = texture2D(u_videoTexture, uv).rgb;
+        // if (u_mouseOver == true) {
+        //   tex *= 2.0;
+        // }
+        float bottomPadding = 1.0 - u_verticalSize / 2.0;
+        float relativeMouseHeight = map(u_mouse.y, 1.0 - bottomPadding, bottomPadding, 0.0, 1.0);
+        colorHSV.z = map(clamp(relativeMouseHeight, 0.0, 1.0), 0.0, 1.0, 0.7, 2.0);
         vec3 color = hsv2rgb(colorHSV);
         tex *= color;
         gl_FragColor = vec4(tex, u_opacity);
