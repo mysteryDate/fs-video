@@ -4,10 +4,9 @@ module.exports = {
     es6: true,
   },
   globals: {
-    "THREE": false, // not allowed to overwrite this
-    "MediaManager": false, // not allowed to overwrite this
-    "Materials": false, // not allowed to overwrite this
-    "nativePostMessage": true, // allow overwriting
+    "THREE": false,
+    "MediaManager": true,
+    "Materials": false,
   },
   extends: [
     "./eslint-rules/airbnb/best-practices.js",
@@ -17,7 +16,6 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 6,
-    sourceType: "module",
   },
   // Our overrides:
   rules: {

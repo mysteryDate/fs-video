@@ -1,3 +1,5 @@
+/* exported MediaManager */
+
 "use strict";
 
 var Clip = function(element) {
@@ -20,10 +22,11 @@ var Clip = function(element) {
   };
 };
 
-var MediaManager = (function(clipElements) {
+var MediaManager = (function(clipElements, verbose) {
   var clips = [];
   var state = "not started";
   var AUDIO_DELAY = 3.500;
+  var VERBOSE = (verbose !== undefined) ? verbose : false;
 
   for (var i = 0; i < clipElements.length; i++) {
     clips.push(new Clip(clipElements[i]));
@@ -44,7 +47,9 @@ var MediaManager = (function(clipElements) {
     clips.forEach(function(c) {
       result[c.name] = c.canPlay;
     });
-    console.log(result);
+    if (VERBOSE) {
+      console.log(result);
+    }
   }
 
   function getAudioClips() {
@@ -165,7 +170,9 @@ var MediaManager = (function(clipElements) {
 
   function readyClip(event) {
     var name = event.target.id;
-    console.log(name + " is ready");
+    if (VERBOSE) {
+      console.log(name + " is ready");
+    }
     printReadyStates();
     var c = getClip(name);
     c.canPlay = true;
@@ -175,7 +182,9 @@ var MediaManager = (function(clipElements) {
     var name = event.target.id;
     var c = getClip(name);
     c.canPlay = false;
-    console.log(name + " is waiting");
+    if (VERBOSE) {
+      console.log(name + " is waiting");
+    }
     printReadyStates();
 
     if (state === "playing" || state === "video playing") {
