@@ -124,7 +124,7 @@ function setLyrics() {
 }
 
 function onDocumentClick(event) {
-  if (MM.getState() === "not started" && MM.ready) {
+  if (MM.getState() === "not started" && MM.ready()) {
     MM.start();
     return;
   }
@@ -251,10 +251,10 @@ function init() {
 
   function update() {
     MM.update();
-    if (MM.getState() === "not started" && !MM.ready) {
+    if (MM.getState() === "not started" && !MM.ready()) {
       LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
       loadingText.style.opacity = Math.sin(2 * performance.now()/1000)/2 + 0.5;
-    } else if (MM.getState() === "not started" && MM.ready) {
+    } else if (MM.getState() === "not started" && MM.ready()) {
       if (readyTime === undefined) {
         readyTime = performance.now()/1000;
       }
