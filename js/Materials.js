@@ -9,6 +9,7 @@ Materials.loadingIcon = function() {
       u_mouse: {value: new THREE.Vector2(0, 0)},
       u_opacity: {value: 1},
       u_time: {value: 0},
+      u_maskShape: {value: 0},
     },
     vertexShader: `
       varying vec2 v_uv;
@@ -18,9 +19,11 @@ Materials.loadingIcon = function() {
       }
     `,
     fragmentShader: `
+      #define PI 3.14159
       varying vec2 v_uv;
       uniform vec2 u_mouse;
       uniform float u_time;
+      uniform float u_maskShape;
       uniform float u_opacity;
 
       float map(float value, float inMin, float inMax, float outMin, float outMax) {
@@ -45,9 +48,24 @@ Materials.loadingIcon = function() {
         return min(rectSDF(st, size.xy), rectSDF(st, size.yx));
       }
 
+      float triSDF(vec2 st) {
+        st = 2.0 * (2.0 * st - 1.0);
+        return max(abs(st.x) * 0.866025 + st.y * 0.5, -st.y * 0.5);
+      }
+
+      vec2 rotate(vec2 st, float theta) {
+        mat2 rotationMatrix = mat2(cos(theta), sin(theta), -sin(theta), cos(theta));
+        return rotationMatrix * st;
+      }
+
+      vec2 rotateAboutPoint(vec2 st, float theta, vec2 point) {
+        return rotate(st - point, theta) + point;
+      }
+
       float sharpness = 0.2;
       float width = 0.2;
       float center = 0.5;
+      float edgeSize = 0.02;
       void main() {
         vec3 color = vec3(0.0);
         vec2 st = v_uv;
@@ -64,9 +82,9 @@ Materials.loadingIcon = function() {
         color *= sharpness/2.0 + 1.0;
         color *= map(width, 0.0, 1.0, 2.0, 1.0);
 
-        float edgeSize = 0.02;
-        float alpha = smoothstep(0.0, edgeSize, v_uv.x) * smoothstep(1.0, 1.0 - edgeSize, v_uv.x);
-        alpha *= smoothstep(0.0, edgeSize, v_uv.y) * smoothstep(1.0, 1.0 - edgeSize, v_uv.y);
+        float rectMask = rectSDF(st, vec2(1.0));
+        float triMask = triSDF(rotateAboutPoint(st - vec2(0.1, 0.0), PI/2.0, vec2(0.5))) + 0.2;
+        float alpha = smoothstep(1.0, 1.0 - edgeSize, mix(rectMask, triMask, u_maskShape));
 
         gl_FragColor = vec4(color, u_opacity * alpha);
       }

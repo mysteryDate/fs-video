@@ -255,6 +255,8 @@ function init() {
       if (readyTime === undefined) {
         readyTime = performance.now()/1000;
       }
+      var shapeT = performance.now()/1000 - readyTime;
+      LOADING_SCREEN.material.uniforms.u_maskShape.value = THREE.Math.smoothstep(shapeT/FADE_IN_TIME * 2, 0, 1);
       loadingText.style.opacity = 1;
       loadingText.textContent = "CLICK TO PLAY";
     } else if (MM.getState() === "ended") {
