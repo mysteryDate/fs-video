@@ -199,8 +199,8 @@ Materials.bar = function(options) {
           } else {
             colorHSV.y = 0.0;
           }
-          float bottomPadding = 1.0 - u_verticalSize / 2.0;
-          float relativeMouseHeight = map(u_mouse.y, 1.0 - bottomPadding, bottomPadding, 0.0, 1.0);
+          float bottomPadding = (1.0 - u_verticalSize) / 2.0;
+          float relativeMouseHeight = map(u_mouse.y, bottomPadding, 1.0 - bottomPadding, 0.0, 1.0);
           colorHSV.z = map(clamp(relativeMouseHeight, 0.0, 1.0), 0.0, 1.0, 0.7, 2.0);
         }
         vec3 color = hsv2rgb(colorHSV);

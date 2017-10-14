@@ -156,7 +156,7 @@ function onDocumentClick(event) {
 }
 
 function onDocumentMouseMove(event) {
-  event.preventDefault();
+  // event.preventDefault();
 
   var mouse = new THREE.Vector2();
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
