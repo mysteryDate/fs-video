@@ -1,6 +1,7 @@
 videos/original/*
 videos/test/*
 audio/wav/*.wav
+audio/wav/silence/*
 *.mov
 audio/compressed/w-silence/*
 node_modules/*

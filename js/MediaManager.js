@@ -26,7 +26,7 @@ var MediaManager = (function(clipElements, verbose) {
   var clips = [];
   var state = "not started";
   var ready = false;
-  var AUDIO_DELAY = 3.500;
+  var AUDIO_DELAY = 0;
   var VERBOSE = (verbose !== undefined) ? verbose : false;
 
   for (var i = 0; i < clipElements.length; i++) {
@@ -74,23 +74,6 @@ var MediaManager = (function(clipElements, verbose) {
     return result;
   }
 
-  function startVideo() {
-    if (canPlay() && state === "not started") {
-      var vc = getVideoClips();
-      vc.forEach(function(c) {
-        if (c.started) {
-          console.warn("You're asking clip " + c.name + " to start though it already has");
-        }
-        c.start();
-      });
-      state = "video playing";
-    } else if (state !== "not started") {
-      console.warn("Can't start, already started. State: " + state);
-    } else {
-      console.warn("Can't start, not ready");
-    }
-  }
-
   function startAudio() {
     if (canPlay() && state === "video playing") {
       var ac = getAudioClips();
@@ -101,6 +84,24 @@ var MediaManager = (function(clipElements, verbose) {
         c.start();
       });
       state = "playing";
+    } else if (state !== "not started") {
+      console.warn("Can't start, already started. State: " + state);
+    } else {
+      console.warn("Can't start, not ready");
+    }
+  }
+
+  function startVideo() {
+    if (canPlay() && state === "not started") {
+      var vc = getVideoClips();
+      vc.forEach(function(c) {
+        if (c.started) {
+          console.warn("You're asking clip " + c.name + " to start though it already has");
+        }
+        c.start();
+      });
+      state = "video playing";
+      startAudio();
     } else if (state !== "not started") {
       console.warn("Can't start, already started. State: " + state);
     } else {
@@ -211,8 +212,6 @@ var MediaManager = (function(clipElements, verbose) {
       ready = true;
     } else if (state === "paused" && canPlay()) {
       unpause();
-    } else if (state === "video playing" && getCurrentVideoTime() >= AUDIO_DELAY) {
-      startAudio();
     }
   }
 

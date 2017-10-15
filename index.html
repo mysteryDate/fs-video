@@ -10,11 +10,11 @@
   </head>
   <body>
     <!-- MEDIA -->
-      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" id="base-video" style="display:none">
+      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" id="base-video" style="display:none" playsinline autoplay="true">
         <source src="videos/performance.mp4" type='video/mp4;'>
       </video>
 
-      <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
+      <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none" playsinline autoplay="true">
         <source src="" type='video/mp4;' id="actionVideoSrc">
       </video>
       <script type="text/javascript">
@@ -29,24 +29,24 @@
       </script>
 
 
-      <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <source src="audio/compressed/brodie.mp3" type="audio/mpeg">
+      <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" playsinline autoplay="true">
+        <source src="audio/compressed/brodie-silence.mp3" type="audio/mpeg">
       </audio>
 
-      <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <source src="audio/compressed/nick.mp3" type="audio/mpeg">
+      <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" playsinline autoplay="true">
+        <source src="audio/compressed/nick-silence.mp3" type="audio/mpeg">
       </audio>
 
-      <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <source src="audio/compressed/chuck.mp3" type="audio/mpeg">
+      <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" playsinline autoplay="true">
+        <source src="audio/compressed/chuck-silence.mp3" type="audio/mpeg">
       </audio>
 
-      <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <source src="audio/compressed/dan.mp3" type="audio/mpeg">
+      <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" playsinline autoplay="true">
+        <source src="audio/compressed/dan-silence.mp3" type="audio/mpeg">
       </audio>
 
-      <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <source src="audio/compressed/dave.mp3" type="audio/mpeg">
+      <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" playsinline autoplay="true">
+        <source src="audio/compressed/dave-silence.mp3" type="audio/mpeg">
       </audio>
     <!--  -->
 

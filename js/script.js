@@ -186,6 +186,8 @@ window.onresize = function() {
 
 document.addEventListener("click", onDocumentClick, false);
 document.addEventListener("mousemove", onDocumentMouseMove, false);
+document.addEventListener("touchstart", onDocumentClick, false);
+document.addEventListener("touchmove", onDocumentMouseMove, false);
 
 function init() {
   container = document.getElementById("container");
