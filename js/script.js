@@ -1,3 +1,5 @@
+/* global bowser */
+
 "use strict";
 
 // THREE.js stuff
@@ -139,14 +141,7 @@ function onDocumentClick(event) {
   raycaster.setFromCamera(mouse, camera);
   var intersectedBars = raycaster.intersectObjects(barScreen.children);
   for (i = 0; i < intersectedBars.length; i++) {
-    var isPlaying = intersectedBars[i].object.material.uniforms.u_playing;
-    var videoTexture = intersectedBars[i].object.material.uniforms.u_videoTexture;
-    isPlaying.value = !isPlaying.value;
-    if (isPlaying.value === true) {
-      videoTexture.value = videoTextures[0];
-    } else {
-      videoTexture.value = videoTextures[1];
-    }
+    intersectedBars[i].object.material.uniforms.u_playing.value = !intersectedBars[i].object.material.uniforms.u_playing.value;
   }
 
   for (i = 0; i < ac.length; i++) {
@@ -159,8 +154,6 @@ function onDocumentClick(event) {
 }
 
 function onDocumentMouseMove(event) {
-  // event.preventDefault();
-
   var mouse = new THREE.Vector2();
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -221,6 +214,7 @@ function init() {
     geo.translate(0.5/audioClips.length, 0, 0); // so that the mesh is centered in x
     var mat = Materials.bar({
       video: videoTextures[0],
+      video2: videoTextures[1],
       index: i,
     });
     var mesh = new THREE.Mesh(geo, mat);
@@ -292,6 +286,7 @@ function init() {
     renderer.render(scene, camera);
     setLyrics();
   }
+  console.log(bowser);
   update();
 }
 

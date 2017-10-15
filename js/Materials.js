@@ -83,7 +83,7 @@ Materials.loadingIcon = function() {
         color *= map(width, 0.0, 1.0, 2.0, 1.0);
 
         float rectMask = rectSDF(st, vec2(1.0));
-        float triMask = triSDF(rotateAboutPoint(st - vec2(0.1, 0.0), PI/2.0, vec2(0.5))) + 0.2;
+        float triMask = triSDF(rotateAboutPoint(st, PI/2.0, vec2(0.5))) + 0.2;
         float alpha = smoothstep(1.0, 1.0 - edgeSize, mix(rectMask, triMask, u_maskShape));
 
         gl_FragColor = vec4(color, u_opacity * alpha);
@@ -107,6 +107,7 @@ Materials.bar = function(options) {
       u_mouseOver: {value: false},
       u_mouse: {value: new THREE.Vector2()},
       u_videoTexture: {value: options.video},
+      u_videoTexture2: {value: options.video2},
       u_opacity: {value: 0},
       u_color: {value: colors[options.index]},
       u_index: {value: options.index},
@@ -124,8 +125,10 @@ Materials.bar = function(options) {
     fragmentShader: `
       varying vec2 v_uv;
       uniform sampler2D u_videoTexture;
+      uniform sampler2D u_videoTexture2;
       uniform vec3 u_color;
       uniform vec2 u_mouse;
+      uniform bool u_playing;
       uniform float u_opacity;
       uniform float u_index;
       uniform float u_intersectedIndex;
@@ -187,6 +190,9 @@ Materials.bar = function(options) {
         uv.x = (v_uv.x + u_index) / NUM_BARS;
         vec3 colorHSV = rgb2hsv(u_color);
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
+        if (!u_playing) {
+          tex = texture2D(u_videoTexture2, uv).rgb;
+        }
 
         if (u_displayMode == 0) {
           colorHSV.y = u_mouse.y;
@@ -194,8 +200,11 @@ Materials.bar = function(options) {
             tex *= 2.0;
           }
         } else if (u_displayMode == 1){
-          if (u_index <= u_intersectedIndex) {
+          if (u_index <= u_intersectedIndex && u_mouse.x > 0.01) {
             colorHSV.y = 1.0;
+            if (!u_playing) {
+              colorHSV.y = 0.5;
+            }
           } else {
             colorHSV.y = 0.0;
           }
