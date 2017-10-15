@@ -113,7 +113,7 @@ Materials.bar = function(options) {
       u_index: {value: options.index},
       u_intersectedIndex: {value: -1},
       u_verticalSize: {value: 1},
-      u_displayMode: {value: 0},
+      u_displayMode: {value: 1},
       u_clock: {value: 0},
     },
     vertexShader: `

@@ -23,29 +23,28 @@ body {
 a {
   color: cyan;
 }
+ul {
+  text-align: left;
+  margin-left: 5%;
+  list-style-type: bengali;
+  max-width: 662px;
+  margin: auto;
+}
 .overlay {
   position: absolute;
 }
 #tutorial {
   font-size: large;
+  text-align: center;
+  width: 90%;
   left: 5%;
-  width: 100%;
   top: 5%;
-}
-#openingCredits {
-  top: 10px;
-  font-size: large;
-  left: 5%;
-  width: 100%;
-  top: 5%;
-  opacity: 0;
-  display: none;
 }
 #closingCredits {
   top: 10px;
   font-size: large;
   left: 5%;
-  width: 100%;
+  width: 90%;
   top: 5%;
   opacity: 0;
   display: none;

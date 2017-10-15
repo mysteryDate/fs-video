@@ -240,7 +240,7 @@ function init() {
   toggleLyrics(undefined, false);
 
   var url = window.location.href;
-  var displayMode = url.split("dm=")[1];
+  var displayMode = url.split("dm=")[1] || 1;
   setBarUniform("u_displayMode", displayMode);
 
   function update() {
@@ -257,18 +257,14 @@ function init() {
       loadingText.style.opacity = 1;
       loadingText.textContent = "CLICK TO PLAY";
     } else if (MM.getState() === "ended") {
-      var openingCredits = document.getElementById("openingCredits");
       var closingCredits = document.getElementById("closingCredits");
       if (endTime === undefined) {
-        openingCredits.style.display = "block";
         closingCredits.style.display = "block";
         endTime = performance.now()/1000;
       }
       var t = (performance.now()/1000 - endTime)/FADE_IN_TIME;
       setBarUniform("u_opacity", 1 - t);
-      var openingOpacity = THREE.Math.smoothstep(t, 0, 1) * THREE.Math.smoothstep(2 - t, 0, 1);
-      openingCredits.style.opacity = openingOpacity;
-      closingCredits.style.opacity = t - 2;
+      closingCredits.style.opacity = t - 1;
     } else {
       var videoT = MM.getCurrentVideoTime();
       var tutorial = document.getElementById("tutorial");

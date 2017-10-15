@@ -27,7 +27,7 @@ var MediaManager = (function(clipElements, verbose) {
   var state = "not started";
   var ready = false;
   var AUDIO_DELAY = 3.500;
-  var VERBOSE = (verbose !== undefined) ? verbose : false;
+  var VERBOSE = (verbose !== undefined) ? verbose : true;
 
   for (var i = 0; i < clipElements.length; i++) {
     clips.push(new Clip(clipElements[i]));
