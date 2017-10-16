@@ -61,20 +61,34 @@ ul {
   font-weight: 400;
   opacity: 1;
 }
-#cc-button {
-  position: absolute;
-  opacity: 0.5;
+.button {
   display: none;
+  opacity: 0.5;
+  position: absolute;
   width: 54px;
   height: 40px;
   bottom: 0px;
-  right: 10%;
-  background-image: url(img/cc-button.jpg);
   background-size: 100%;
   background-repeat: no-repeat;
 }
-#cc-button:hover {
+.button:hover {
   opacity: 1;
+}
+#reload-button {
+  right: 108px;
+  background-image: url(img/reload.jpg);
+}
+#cc-button {
+  right: 54px;
+  background-image: url(img/cc-button.jpg);
+}
+#lores-button {
+  right: 162px;
+  background-image: url(img/lo-res.jpg);
+}
+#hires-button {
+  right: 162px;
+  background-image: url(img/hi-res.jpg);
 }
 #muchFact-logo {
   background-image: url(img/muchfact-logo.jpg);
