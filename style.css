@@ -75,7 +75,7 @@ ul {
   opacity: 1;
 }
 #reload-button {
-  right: 108px;
+  right: 162px;
   background-image: url(img/reload.jpg);
 }
 #cc-button {
@@ -83,11 +83,11 @@ ul {
   background-image: url(img/cc-button.jpg);
 }
 #lores-button {
-  right: 162px;
+  right: 108px;
   background-image: url(img/lo-res.jpg);
 }
 #hires-button {
-  right: 162px;
+  right: 108px;
   background-image: url(img/hi-res.jpg);
 }
 #muchFact-logo {
