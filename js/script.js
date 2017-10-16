@@ -124,6 +124,9 @@ function setLyrics() {
     lyricsTextField.style.display = "none";
   }
 }
+function reload() {
+  window.location.reload(false);
+}
 
 function onDocumentClick(event) {
   if (MM.getState() === "not started" && MM.ready()) {
@@ -131,7 +134,7 @@ function onDocumentClick(event) {
     return;
   }
   if (MM.getState() === "ended") {
-    window.location.reload(false);
+    reload();
   }
 
   var ac = MM.getAudioClips();
@@ -268,8 +271,10 @@ function init() {
     } else {
       var videoT = MM.getCurrentVideoTime();
       var tutorial = document.getElementById("tutorial");
-      var ccButton = document.getElementById("cc-button");
-      ccButton.style.display = "block";
+      var buttons = document.getElementsByClassName("button");
+      for (i = 0; i < buttons.length; i++) {
+        buttons[i].style.display = "block";
+      }
       LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
       loadingText.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
       tutorial.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
