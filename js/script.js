@@ -28,7 +28,8 @@ var endTime;
 var readyTime;
 
 // Counters and UI
-var MM = new MediaManager(document.getElementsByClassName("media"));
+var MM;
+var CC_BUTTON;
 
 function toggleLyrics(event, setting) {
   if (event !== undefined) {
@@ -40,11 +41,10 @@ function toggleLyrics(event, setting) {
     LYRICS_ON = !LYRICS_ON;
   }
 
-  var ccButton = document.getElementById("cc-button");
   if (LYRICS_ON) {
-    ccButton.style.backgroundImage = "url(img/cc-button-on.jpg)";
+    CC_BUTTON.style.backgroundImage = "url(img/cc-button-on.jpg)";
   } else {
-    ccButton.style.backgroundImage = "url(img/cc-button.jpg)";
+    CC_BUTTON.style.backgroundImage = "url(img/cc-button.jpg)";
   }
 }
 
@@ -163,6 +163,7 @@ function onDocumentMouseMove(event) {
   raycaster.setFromCamera(mouse, camera);
   var intersectedBars = raycaster.intersectObjects(barScreen.children);
   var intersectedIndex = -1;
+
   for (i = 0; i < barScreen.children.length; i++) {
     barScreen.children[i].material.uniforms.u_mouseOver.value = false;
     barScreen.children[i].material.uniforms.u_mouse.value.x = (mouse.x + 1) / 2;
@@ -191,6 +192,7 @@ document.addEventListener("click", onDocumentClick, false);
 document.addEventListener("mousemove", onDocumentMouseMove, false);
 
 function init() {
+  MM = new MediaManager(document.getElementsByClassName("media"));
   container = document.getElementById("container");
   renderer = new THREE.WebGLRenderer({antialias: true});
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -227,6 +229,7 @@ function init() {
   barScreen.position.set(0.5, 0.5, 0);
   scene.add(barScreen);
   sizeAndPositionBars();
+  barScreen.visible = false;
 
   LOADING_SCREEN = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(1, 1),
@@ -237,6 +240,7 @@ function init() {
   LOADING_SCREEN.position.set(0.5, loadingScreenScale.y/2 + 0.1, -1);
   scene.add(LOADING_SCREEN);
 
+  CC_BUTTON = document.getElementById("cc-button");
   loadJSON(function(response) {
     lyricsJSON = JSON.parse(response);
   });
@@ -248,6 +252,7 @@ function init() {
 
   function update() {
     MM.update();
+    var videoT = MM.getCurrentVideoTime();
     if (MM.getState() === "not started" && !MM.ready()) {
       LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
       loadingText.style.opacity = Math.sin(2 * performance.now()/1000)/2 + 0.5;
@@ -268,8 +273,8 @@ function init() {
       var t = (performance.now()/1000 - endTime)/FADE_IN_TIME;
       setBarUniform("u_opacity", 1 - t);
       closingCredits.style.opacity = t - 1;
-    } else {
-      var videoT = MM.getCurrentVideoTime();
+    } else if (videoT < 2 * FADE_IN_TIME) {
+      barScreen.visible = true;
       var tutorial = document.getElementById("tutorial");
       var buttons = document.getElementsByClassName("button");
       for (i = 0; i < buttons.length; i++) {
@@ -278,10 +283,9 @@ function init() {
       LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
       loadingText.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
       tutorial.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
-      for (i = 0; i < barScreen.children.length; i++) {
-        barScreen.children[i].material.uniforms.u_opacity.value = videoT/FADE_IN_TIME;
-        barScreen.children[i].material.uniforms.u_clock.value = performance.now()/1000;
-      }
+      setBarUniform("u_opacity", videoT/FADE_IN_TIME);
+    } else {
+      LOADING_SCREEN.visible = false;
     }
     requestAnimationFrame(update);
     renderer.render(scene, camera);

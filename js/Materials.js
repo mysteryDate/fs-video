@@ -114,7 +114,6 @@ Materials.bar = function(options) {
       u_intersectedIndex: {value: -1},
       u_verticalSize: {value: 1},
       u_displayMode: {value: 1},
-      u_clock: {value: 0},
     },
     vertexShader: `
       varying vec2 v_uv;
@@ -133,7 +132,6 @@ Materials.bar = function(options) {
       uniform float u_index;
       uniform float u_intersectedIndex;
       uniform float u_verticalSize;
-      uniform float u_clock;
       uniform int u_displayMode;
       uniform bool u_mouseOver;
 

@@ -15,15 +15,17 @@
       </video>
 
       <video class="media video" id="actionVideo" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="second-video" style="display:none">
-        <source src="" type='video/mp4;' id="actionVideoSrc">
       </video>
       <script type="text/javascript">
-        (function() {
+        window.onload = (function() {
           var NUM_ACTION_CLIPS = 6;
           var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
           var file = "videos/small/action-" + index + ".mp4";
-          var avSource = document.getElementById("actionVideoSrc");
-          avSource.src = file;
+          var av = document.getElementById("actionVideo");
+          var source = document.createElement("source");
+          source.src = file;
+          source.type = "video/mp4";
+          av.appendChild(source);
           console.log(file);
         })();
       </script>
