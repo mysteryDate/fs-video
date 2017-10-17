@@ -7,19 +7,19 @@ var container;
 var renderer;
 var camera;
 var scene;
-var raycaster = new THREE.Raycaster();
+var raycaster;
 
 // Materials and textures
 var videoTextures = [];
 var barScreen;
 
 var i;
-var lyricsTextField = document.getElementById("lyricsText");
+var lyricsTextField;
 var lyricsJSON;
 var lyricsIndex = 0;
 
 var LOADING_SCREEN;
-var loadingText = document.getElementById("loadingText");
+var loadingText;
 var loadingScreenSize = 0.3;
 var FADE_IN_TIME = 3;
 var LYRICS_ON = false;
@@ -198,7 +198,7 @@ document.addEventListener("mousemove", onDocumentMouseMove, false);
 
 function parseOptionString() {
   var url = window.location.href;
-  var optionString = url.split("#")[1] || "";
+  var optionString = url.split("?")[1] || "";
   var options = optionString.split("&");
   Object.keys(URL_OPTIONS).forEach(function(urlOption) {
     for (i = 0; i < options.length; i++) {
@@ -213,6 +213,9 @@ function parseOptionString() {
 
 function init() {
   parseOptionString();
+  raycaster = new THREE.Raycaster();
+  lyricsTextField = document.getElementById("lyricsText");
+  loadingText = document.getElementById("loadingText");
   var medias = document.getElementsByClassName("media");
   for (i = 0; i < medias.length; i++) {
     var kind = medias[i].tagName.toLowerCase();
@@ -245,10 +248,10 @@ function init() {
   resLine.textContent = "Watching from a low speed connection? ";
   var resLink = document.createElement("a");
   resLink.textContent = "Try the 8-bit style low res option.";
-  resLink.href = "#resolution=low";
+  resLink.href = "?resolution=low";
   if (URL_OPTIONS.resolution === "low") {
     resButton.style.backgroundImage = "url(img/hi-res.jpg)";
-    resButton.href = "#resolution=high";
+    resButton.href = "?resolution=high";
     resLine.textContent = "";
     resLink.textContent = "Try the hi res option";
     resLink.href = "";

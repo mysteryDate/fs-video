@@ -10,18 +10,12 @@
   </head>
   <body>
     <!-- MEDIA -->
-      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" id="performance" style="display:none"></video>
-
-      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="action" style="display:none"></video>
-
+      <video class="media video" id="performance" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" style="display:none"></video>
+      <video class="media video" id="action" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" style="display:none"></video>
       <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
-
       <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
-
       <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
-
       <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
-
       <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
     <!--  -->
 
@@ -73,7 +67,7 @@
 
       <div id="cc-button" class="button" onclick="toggleLyrics(event)"></div>
       <div id="reload-button" class="button" onclick="reload(event)"></div>
-      <a href="#resolution=low" id="res-button" onclick="reload(event)" class="button"></a>
+      <a href="?resolution=low" id="res-button" onclick="reload(event)" class="button"></a>
     <!--  -->
 
     <!-- SCRIPTS -->
