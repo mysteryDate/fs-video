@@ -10,46 +10,19 @@
   </head>
   <body>
     <!-- MEDIA -->
-      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" id="performance" style="display:none">
-        <!-- <source src="videos/performance.mp4" type='video/mp4;'> -->
-      </video>
+      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" onended="MM.ended(event)" id="performance" style="display:none"></video>
 
-      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="action" style="display:none">
-      </video>
-      <!-- <script type="text/javascript">
-        window.onload = (function() {
-          var NUM_ACTION_CLIPS = 6;
-          var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
-          var file = "videos/action-" + index + ".mp4";
-          var av = document.getElementById("actionVideo");
-          var source = document.createElement("source");
-          source.src = file;
-          source.type = "video/mp4";
-          av.appendChild(source);
-          console.log(file);
-        })();
-      </script> -->
+      <video class="media video" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)" id="action" style="display:none"></video>
 
+      <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
 
-      <audio class="media audio" id="brodie" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <!-- <source src="audio/compressed/brodie.mp3" type="audio/mpeg"> -->
-      </audio>
+      <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
 
-      <audio class="media audio" id="nick" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <!-- <source src="audio/compressed/nick.mp3" type="audio/mpeg"> -->
-      </audio>
+      <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
 
-      <audio class="media audio" id="chuck" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <!-- <source src="audio/compressed/chuck.mp3" type="audio/mpeg"> -->
-      </audio>
+      <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
 
-      <audio class="media audio" id="dan" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <!-- <source src="audio/compressed/dan.mp3" type="audio/mpeg"> -->
-      </audio>
-
-      <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)">
-        <!-- <source src="audio/compressed/dave.mp3" type="audio/mpeg"> -->
-      </audio>
+      <audio class="media audio" id="dave" onwaiting="MM.isWaiting(event)" oncanplay="MM.readyClip(event)"></audio>
     <!--  -->
 
     <!-- HTML -->
@@ -65,7 +38,7 @@
           <li>Click on a member to remove/include them from the performance</li>
           <li>Colour the frame by moving your mouse around the screen</li>
           <li>Click the refresh button to explore multiple background videos (there are 6 in total)</li>
-          <li>Watching from a low speed connection? <a href="lowres.html">Try the 8-bit style low res option.</a></li>
+          <li id="resLine">Watching from a low speed connection? <a href="lowres.html">Try the 8-bit style low res option.</a></li>
         </ul></div>
         <br>
         Have Fun!<br>
@@ -100,7 +73,7 @@
 
       <div id="cc-button" class="button" onclick="toggleLyrics(event)"></div>
       <div id="reload-button" class="button" onclick="reload(event)"></div>
-      <a href="lowres.html" id="lores-button" class="button"></a>
+      <a href="#resolution=low" id="res-button" onclick="reload(event)" class="button"></a>
     <!--  -->
 
     <!-- SCRIPTS -->

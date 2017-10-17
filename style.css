@@ -82,13 +82,8 @@ ul {
   right: 54px;
   background-image: url(img/cc-button.jpg);
 }
-#lores-button {
+#res-button {
   right: 108px;
-  background-image: url(img/lo-res.jpg);
-}
-#hires-button {
-  right: 108px;
-  background-image: url(img/hi-res.jpg);
 }
 #muchFact-logo {
   background-image: url(img/muchfact-logo.jpg);

@@ -238,6 +238,23 @@ function init() {
     source.type = type;
     medias[i].appendChild(source);
   }
+
+  var resButton = document.getElementById("res-button");
+  resButton.style.backgroundImage = "url(img/lo-res.jpg)";
+  var resLine = document.getElementById("resLine");
+  resLine.textContent = "Watching from a low speed connection? ";
+  var resLink = document.createElement("a");
+  resLink.textContent = "Try the 8-bit style low res option.";
+  resLink.href = "#resolution=low";
+  if (URL_OPTIONS.resolution === "low") {
+    resButton.style.backgroundImage = "url(img/hi-res.jpg)";
+    resLine.textContent = "";
+    resLink.textContent = "Try the hi res option";
+    resLink.href = "";
+  }
+  resLine.appendChild(resLink);
+  resLink.onclick = reload;
+
   MM = new MediaManager(medias);
   container = document.getElementById("container");
   renderer = new THREE.WebGLRenderer({antialias: true});
@@ -297,6 +314,7 @@ function init() {
   function update() {
     MM.update();
     var videoT = MM.getCurrentVideoTime();
+    var tutorial;
     if (MM.getState() === "not started" && !MM.ready()) {
       LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
       loadingText.style.opacity = Math.sin(2 * performance.now()/1000)/2 + 0.5;
@@ -318,18 +336,22 @@ function init() {
       setBarUniform("u_opacity", 1 - t);
       closingCredits.style.opacity = t - 1;
     } else if (videoT < 2 * FADE_IN_TIME) {
-      barScreen.visible = true;
-      var tutorial = document.getElementById("tutorial");
-      var buttons = document.getElementsByClassName("button");
-      for (i = 0; i < buttons.length; i++) {
-        buttons[i].style.display = "block";
+      if (barScreen.visible === false) {
+        barScreen.visible = true;
+        var buttons = document.getElementsByClassName("button");
+        for (i = 0; i < buttons.length; i++) {
+          buttons[i].style.display = "block";
+        }
       }
+      tutorial = document.getElementById("tutorial");
       LOADING_SCREEN.material.uniforms.u_opacity.value = 2 - videoT/FADE_IN_TIME;
       loadingText.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
       tutorial.style.opacity = 1 - 2 * videoT/FADE_IN_TIME;
       setBarUniform("u_opacity", videoT/FADE_IN_TIME);
-    } else {
+    } else if (LOADING_SCREEN.visible === true) {
       LOADING_SCREEN.visible = false;
+      tutorial = document.getElementById("tutorial");
+      tutorial.parentElement.removeChild(tutorial);
     }
     requestAnimationFrame(update);
     renderer.render(scene, camera);
