@@ -26,10 +26,15 @@ var LYRICS_ON = false;
 var ASPECT_RATIO = 1920/1080;
 var endTime;
 var readyTime;
+var NUM_ACTION_CLIPS = 6;
 
 // Counters and UI
 var MM;
 var CC_BUTTON;
+var URL_OPTIONS = {
+  displayMode: 1,
+  resolution: "high",
+};
 
 function toggleLyrics(event, setting) {
   if (event !== undefined) {
@@ -191,8 +196,49 @@ window.onresize = function() {
 document.addEventListener("click", onDocumentClick, false);
 document.addEventListener("mousemove", onDocumentMouseMove, false);
 
+function parseOptionString() {
+  var url = window.location.href;
+  var optionString = url.split("#")[1] || "";
+  var options = optionString.split("&");
+  Object.keys(URL_OPTIONS).forEach(function(urlOption) {
+    for (i = 0; i < options.length; i++) {
+      var key = options[i].split("=")[0];
+      var value = options[i].split("=")[1];
+      if (urlOption === key) {
+        URL_OPTIONS[urlOption] = value;
+      }
+    }
+  });
+}
+
 function init() {
-  MM = new MediaManager(document.getElementsByClassName("media"));
+  parseOptionString();
+  var medias = document.getElementsByClassName("media");
+  for (i = 0; i < medias.length; i++) {
+    var kind = medias[i].tagName.toLowerCase();
+    var extension = ".mp3";
+    var type = "audio/mpeg";
+    var folder = "audio/compressed";
+    var name = medias[i].id;
+    if (kind === "video") {
+      folder = "videos";
+      extension = ".mp4";
+      type = "video/mp4";
+      if (name === "action") {
+        var index = Math.ceil(Math.random() * NUM_ACTION_CLIPS);
+        name = name + "-" + index;
+      }
+    }
+    var fileName = folder+"/"+name+extension;
+    if (URL_OPTIONS.resolution === "low") {
+      fileName = folder+"/small/"+name+extension;
+    }
+    var source = document.createElement("source");
+    source.src = fileName;
+    source.type = type;
+    medias[i].appendChild(source);
+  }
+  MM = new MediaManager(medias);
   container = document.getElementById("container");
   renderer = new THREE.WebGLRenderer({antialias: true});
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -246,9 +292,7 @@ function init() {
   });
   toggleLyrics(undefined, false);
 
-  var url = window.location.href;
-  var displayMode = url.split("dm=")[1] || 1;
-  setBarUniform("u_displayMode", displayMode);
+  setBarUniform("u_displayMode", URL_OPTIONS.displayMode);
 
   function update() {
     MM.update();
