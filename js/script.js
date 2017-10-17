@@ -248,6 +248,7 @@ function init() {
   resLink.href = "#resolution=low";
   if (URL_OPTIONS.resolution === "low") {
     resButton.style.backgroundImage = "url(img/hi-res.jpg)";
+    resButton.href = "#resolution=high";
     resLine.textContent = "";
     resLink.textContent = "Try the hi res option";
     resLink.href = "";
