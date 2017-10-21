@@ -8,3 +8,10 @@ buttons:
 
 test mobile
 credits at the end
+
+Video quality: 
+  Main: 500kbps
+  Small: 100kbps
+    1: 40
+    4: 50
+    5: 40
