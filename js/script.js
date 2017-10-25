@@ -129,7 +129,8 @@ function setLyrics() {
     lyricsTextField.style.display = "none";
   }
 }
-function reload() {
+function reload(event) {
+  event.stopPropagation();
   window.location.reload(false);
 }
 
