@@ -27,6 +27,7 @@ var ASPECT_RATIO = 1920/1080;
 var endTime;
 var readyTime;
 var NUM_ACTION_CLIPS = 6;
+var tutorial;
 
 // Counters and UI
 var MM;
@@ -194,8 +195,6 @@ window.onresize = function() {
   sizeAndPositionBars();
 };
 
-document.addEventListener("click", onDocumentClick, false);
-document.addEventListener("mousemove", onDocumentMouseMove, false);
 
 function parseOptionString() {
   var url = window.location.href;
@@ -213,10 +212,21 @@ function parseOptionString() {
 }
 
 function init() {
+  // if (!(bowser.chrome === true || bowser.firefox === true)) {
+  loadingText = document.getElementById("loadingText");
+  tutorial = document.getElementById("tutorial");
+  tutorial.style.display = "block";
+  loadingText.style.display = "block";
+  if (!(bowser.chrome === true || bowser.firefox === true) || bowser.mobile === true || bowser.tablet === true) {
+    tutorial.textContent = "Please watch using Chrome or Firefox on a desktop";
+    loadingText.textContent = "";
+    return;
+  }
+  document.addEventListener("click", onDocumentClick, false);
+  document.addEventListener("mousemove", onDocumentMouseMove, false);
   parseOptionString();
   raycaster = new THREE.Raycaster();
   lyricsTextField = document.getElementById("lyricsText");
-  loadingText = document.getElementById("loadingText");
   var medias = document.getElementsByClassName("media");
   for (i = 0; i < medias.length; i++) {
     var kind = medias[i].tagName.toLowerCase();
@@ -319,7 +329,6 @@ function init() {
   function update() {
     MM.update();
     var videoT = MM.getCurrentVideoTime();
-    var tutorial;
     if (MM.getState() === "not started" && !MM.ready()) {
       LOADING_SCREEN.material.uniforms.u_time.value = performance.now()/1000;
       loadingText.style.opacity = Math.sin(2 * performance.now()/1000)/2 + 0.5;

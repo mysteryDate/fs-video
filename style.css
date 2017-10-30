@@ -34,6 +34,7 @@ ul {
   position: absolute;
 }
 #tutorial {
+  display: none;
   font-size: large;
   text-align: center;
   width: 90%;
@@ -56,6 +57,7 @@ ul {
   text-align: center;
 }
 #loadingText {
+  display: none;
   color: white;
   font-size: xx-large;
   font-weight: 400;
