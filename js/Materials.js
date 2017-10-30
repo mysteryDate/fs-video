@@ -114,6 +114,7 @@ Materials.bar = function(options) {
       u_intersectedIndex: {value: -1},
       u_verticalSize: {value: 1},
       u_displayMode: {value: 1},
+      u_blackAndWhite: {value: true},
     },
     vertexShader: `
       varying vec2 v_uv;
@@ -127,13 +128,14 @@ Materials.bar = function(options) {
       uniform sampler2D u_videoTexture2;
       uniform vec3 u_color;
       uniform vec2 u_mouse;
-      uniform bool u_playing;
+      uniform float u_playing;
       uniform float u_opacity;
       uniform float u_index;
       uniform float u_intersectedIndex;
       uniform float u_verticalSize;
       uniform int u_displayMode;
       uniform bool u_mouseOver;
+      uniform bool u_blackAndWhite;
 
       const float NUM_BARS = 5.0;
 
@@ -188,28 +190,17 @@ Materials.bar = function(options) {
         uv.x = (v_uv.x + u_index) / NUM_BARS;
         vec3 colorHSV = rgb2hsv(u_color);
         vec3 tex = texture2D(u_videoTexture, uv).rgb;
-        if (!u_playing) {
-          tex = texture2D(u_videoTexture2, uv).rgb;
-        }
+        vec3 tex2 = texture2D(u_videoTexture2, uv).rgb;
+        tex = mix(tex2, tex, u_playing);
+        float texLuma = 0.299 * tex.r + 0.587 * tex.g + 0.114 * tex.b;
+        tex = vec3(texLuma);
 
-        if (u_displayMode == 0) {
-          colorHSV.y = u_mouse.y;
-          if (u_mouseOver == true) {
-            tex *= 2.0;
-          }
-        } else if (u_displayMode == 1){
-          if (u_index <= u_intersectedIndex && u_mouse.x > 0.01) {
-            colorHSV.y = 1.0;
-            if (!u_playing) {
-              colorHSV.y = 0.5;
-            }
-          } else {
-            colorHSV.y = 0.0;
-          }
-          float bottomPadding = (1.0 - u_verticalSize) / 2.0;
-          float relativeMouseHeight = map(u_mouse.y, bottomPadding, 1.0 - bottomPadding, 0.0, 1.0);
-          colorHSV.z = map(clamp(relativeMouseHeight, 0.0, 1.0), 0.0, 1.0, 0.7, 2.0);
-        }
+        colorHSV.y = step(u_index, u_intersectedIndex);
+        colorHSV.y *= step(0.01, u_mouse.x);
+        colorHSV.y *= u_playing / 2.0 + 0.5;
+        float bottomPadding = (1.0 - u_verticalSize) / 2.0;
+        float relativeMouseHeight = map(u_mouse.y, bottomPadding, 1.0 - bottomPadding, 0.0, 1.0);
+        colorHSV.z = map(clamp(relativeMouseHeight, 0.0, 1.0), 0.0, 1.0, 0.7, 2.0);
         vec3 color = hsv2rgb(colorHSV);
 
         tex *= color;
