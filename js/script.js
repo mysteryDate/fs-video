@@ -135,7 +135,10 @@ function reload(event) {
   window.location.reload(false);
 }
 
+var mouse = new THREE.Vector2();
 function onDocumentClick(event) {
+  event.stopPropagation();
+  console.log(event);
   if (MM.getState() === "not started" && MM.ready()) {
     MM.start();
     return;
@@ -145,7 +148,10 @@ function onDocumentClick(event) {
   }
 
   var ac = MM.getAudioClips();
-  var mouse = new THREE.Vector2();
+  if (event.touches[0] !== undefined) {
+    event.clientX = event.touches[0].clientX;
+    event.clientY = event.touches[0].clientY;
+  }
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
@@ -164,7 +170,12 @@ function onDocumentClick(event) {
 }
 
 function onDocumentMouseMove(event) {
-  var mouse = new THREE.Vector2();
+  event.stopPropagation();
+  console.log(event);
+  if (event.touches[0] !== undefined) {
+    event.clientX = event.touches[0].clientX;
+    event.clientY = event.touches[0].clientY;
+  }
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
@@ -217,13 +228,15 @@ function init() {
   tutorial = document.getElementById("tutorial");
   tutorial.style.display = "block";
   loadingText.style.display = "block";
-  if (!(bowser.chrome === true || bowser.firefox === true) || bowser.mobile === true || bowser.tablet === true) {
-    tutorial.textContent = "Please watch using Chrome or Firefox on a desktop";
-    loadingText.textContent = "";
-    return;
-  }
+  // if (!(bowser.chrome === true || bowser.firefox === true) || bowser.mobile === true || bowser.tablet === true) {
+  //   tutorial.textContent = "Please watch using Chrome or Firefox on a desktop";
+  //   loadingText.textContent = "";
+  //   return;
+  // }
   document.addEventListener("click", onDocumentClick, false);
+  document.addEventListener("touchstart", onDocumentClick, false);
   document.addEventListener("mousemove", onDocumentMouseMove, false);
+  document.addEventListener("touchmove", onDocumentMouseMove, false);
   parseOptionString();
   raycaster = new THREE.Raycaster();
   lyricsTextField = document.getElementById("lyricsText");

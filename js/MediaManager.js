@@ -108,6 +108,11 @@ var MediaManager = (function(clipElements, verbose) {
     }
   }
 
+  function start() {
+    startVideo();
+    startAudio();
+  }
+
   function pause() {
     if (state === "playing" || state === "video playing") {
       clips.forEach(function(c) {
@@ -235,7 +240,7 @@ var MediaManager = (function(clipElements, verbose) {
     update: update,
     clips: clips,
     setVolume: setVolume,
-    start: startVideo,
+    start: start,
     ended: ended,
     ready: function() { return ready; },
   };
