@@ -266,7 +266,7 @@ function init() {
     resButton.href = "?resolution=high";
     resLine.textContent = "";
     resLink.textContent = "Try the hi res option";
-    resLink.href = "";
+    resLink.href = "?resolution=high";
   }
   resLine.appendChild(resLink);
   resLink.onclick = reload;
