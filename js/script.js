@@ -138,7 +138,6 @@ function reload(event) {
 var mouse = new THREE.Vector2();
 function onDocumentClick(event) {
   event.stopPropagation();
-  console.log(event);
   if (MM.getState() === "not started" && MM.ready()) {
     MM.start();
     return;
@@ -162,9 +161,9 @@ function onDocumentClick(event) {
 
   for (i = 0; i < ac.length; i++) {
     if (barScreen.children[i].material.uniforms.u_playing.value) {
-      ac[i].element.volume = 1;
+      ac[i].element.muted = false;
     } else {
-      ac[i].element.volume = 0;
+      ac[i].element.muted = true;
     }
   }
 }
