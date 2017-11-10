@@ -219,6 +219,7 @@ function init() {
   loadingText.style.display = "block";
   if (!(bowser.chrome === true || bowser.firefox === true) || bowser.mobile === true || bowser.tablet === true) {
     tutorial.textContent = "Please watch using Chrome or Firefox on a desktop";
+    tutorial.style.fontSize = "xx-large";
     loadingText.textContent = "";
     return;
   }
