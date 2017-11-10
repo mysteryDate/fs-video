@@ -148,7 +148,7 @@ function onDocumentClick(event) {
   }
 
   var ac = MM.getAudioClips();
-  if (event.touches[0] !== undefined) {
+  if (event.touches !== undefined) {
     event.clientX = event.touches[0].clientX;
     event.clientY = event.touches[0].clientY;
   }
@@ -171,8 +171,7 @@ function onDocumentClick(event) {
 
 function onDocumentMouseMove(event) {
   event.stopPropagation();
-  console.log(event);
-  if (event.touches[0] !== undefined) {
+  if (event.touches !== undefined) {
     event.clientX = event.touches[0].clientX;
     event.clientY = event.touches[0].clientY;
   }
