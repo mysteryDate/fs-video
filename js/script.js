@@ -141,7 +141,7 @@ function onDocumentClick(event) {
     return;
   }
   if (MM.getState() === "ended") {
-    reload();
+    reload(event);
   }
 
   var ac = MM.getAudioClips();
