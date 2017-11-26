@@ -108,6 +108,23 @@ var MediaManager = (function(clipElements, verbose) {
     }
   }
 
+  function start() {
+    if (canPlay() && state === "not started") {
+      clips.forEach(function(c) {
+        if (c.started) {
+          console.warn("You're asking clip " + c.name + " to start though it already has");
+        }
+        c.start();
+      });
+      state = "playing";
+    }
+    else if (state !== "not started") {
+      console.warn("Can't start, already started. State: " + state);
+    } else {
+      console.warn("Can't start, not ready");
+    }
+  }
+
   function pause() {
     if (state === "playing" || state === "video playing") {
       clips.forEach(function(c) {
@@ -236,7 +253,7 @@ var MediaManager = (function(clipElements, verbose) {
     update: update,
     clips: clips,
     setVolume: setVolume,
-    start: function() { startVideo(); startAudio(); },
+    start: start,
     ended: ended,
     ready: function() { return ready; },
   };
