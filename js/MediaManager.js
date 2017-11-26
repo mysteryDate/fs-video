@@ -26,7 +26,7 @@ var MediaManager = (function(clipElements, verbose) {
   var clips = [];
   var state = "not started";
   var ready = false;
-  var AUDIO_DELAY = 3.500;
+  var AUDIO_DELAY = 0;
   var VERBOSE = (verbose !== undefined) ? verbose : true;
 
   for (var i = 0; i < clipElements.length; i++) {
@@ -211,9 +211,10 @@ var MediaManager = (function(clipElements, verbose) {
       ready = true;
     } else if (state === "paused" && canPlay()) {
       unpause();
-    } else if (state === "video playing" && getCurrentVideoTime() >= AUDIO_DELAY) {
-      startAudio();
     }
+    /*} else if (state === "video playing" && getCurrentVideoTime() >= AUDIO_DELAY) {
+      startAudio();
+    }*/
   }
 
   function ended() {
@@ -235,7 +236,7 @@ var MediaManager = (function(clipElements, verbose) {
     update: update,
     clips: clips,
     setVolume: setVolume,
-    start: startVideo,
+    start: function() { startVideo(); startAudio(); },
     ended: ended,
     ready: function() { return ready; },
   };
