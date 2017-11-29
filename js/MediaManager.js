@@ -117,8 +117,7 @@ var MediaManager = (function(clipElements, verbose) {
         c.start();
       });
       state = "playing";
-    }
-    else if (state !== "not started") {
+    } else if (state !== "not started") {
       console.warn("Can't start, already started. State: " + state);
     } else {
       console.warn("Can't start, not ready");
@@ -142,6 +141,12 @@ var MediaManager = (function(clipElements, verbose) {
     } else {
       console.warn("Can't pause, not playing. State: " + state);
     }
+  }
+
+  function printCurrentTime() {
+    clips.forEach(function(c) {
+      console.log(c.element.currentTime);
+    });
   }
 
   function getCurrentVideoTime() {
@@ -255,6 +260,7 @@ var MediaManager = (function(clipElements, verbose) {
     setVolume: setVolume,
     start: start,
     ended: ended,
+    printCurrentTime: printCurrentTime,
     ready: function() { return ready; },
   };
 });

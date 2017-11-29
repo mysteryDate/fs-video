@@ -217,8 +217,8 @@ function init() {
   tutorial = document.getElementById("tutorial");
   tutorial.style.display = "block";
   loadingText.style.display = "block";
-  if (!(bowser.chrome === true || bowser.firefox === true) || bowser.mobile === true || bowser.tablet === true) {
-    tutorial.textContent = "Please watch using Chrome or Firefox on a desktop";
+  if (!(bowser.chrome === true) || bowser.mobile === true || bowser.tablet === true) {
+    tutorial.textContent = "Please watch using Chrome on a desktop";
     tutorial.style.fontSize = "xx-large";
     loadingText.textContent = "";
     return;
